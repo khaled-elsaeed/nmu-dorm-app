@@ -39,5 +39,13 @@ $('#searchInput').on('input', function() {
     });
 });
 
+// for showing dropdown above table and not hidden in cell
 
+// $('.table-responsive').on('show.bs.dropdown', function () {
+//     $('.table-responsive').css( "overflow", "inherit" );
+// });
+
+// $('.table-responsive').on('hide.bs.dropdown', function () {
+//     $('.table-responsive').css( "overflow", "auto" );
+// })
 
