@@ -152,13 +152,20 @@
                         </nav>
                      </div>
                   </div>
-                  <div class="row justify-content-end">
-                     <div class="col-12 col-md-4 order-md-2 order-first mb-3">
+                  <div class="row align-items-center justify-content-between mb-3">
+                     <div class="col-12 col-md-4 order-md-1 mb-3 mb-md-0">
                         <!-- Search input and button -->
                         <div class="input-group">
                            <input type="text" class="form-control" id="searchInput" placeholder="Search...">
                            <span class="input-group-text"><i class="bi bi-search"></i></span>
                         </div>
+                     </div>
+                     <div class="col-12 col-md-4 order-md-2 d-flex justify-content-md-end">
+                        <!-- Button to download CSV -->
+                        <button type="button" class="btn btn-outline-secondary" onclick="downloadExcel()">
+                        Download CSV
+                        <span class="fa-fw select-all fas"></span>
+                        </button>
                      </div>
                   </div>
                </div>
@@ -234,6 +241,8 @@
 <script src="../assets/static/js/pages/maintenance.js"></script>
 
 <script src="../assets/extensions/sweetalert2/sweetalert2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+
 
    </body>
 </html>

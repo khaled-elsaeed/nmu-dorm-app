@@ -69,7 +69,7 @@ async function postDataDB(action, data) {
 
 
 // Put data
-async function putData(action, data) {
+async function updateDataDB(action, data) {
     try {
         const encodedAction = await hashAction(action);
         const encodedData = encodeData(data);
@@ -171,7 +171,7 @@ function confirmAction(title, text) {
             if (result.isConfirmed) {
                 resolve(true);
             } else {
-                reject(false);
+                reject('User cancelled the action');
             }
         });
     });
