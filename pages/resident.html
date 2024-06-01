@@ -12,6 +12,54 @@
       <link rel="stylesheet" crossorigin href="./../assets/compiled/css/table-datatable.css">
       <link rel="stylesheet" crossorigin href="./../assets/compiled/css/app.css">
       <link rel="stylesheet" crossorigin href="./../assets/compiled/css/app-dark.css">
+      <style>
+         .modal-header {
+             border-bottom: none;
+         }
+         .modal-footer {
+             border-top: none;
+             justify-content: space-between;
+         }
+         .btn-primary {
+             background-color: #1877F2;
+             border-color: #1877F2;
+         }
+         .btn-secondary {
+             background-color: #F0F2F5;
+             border-color: #F0F2F5;
+         }
+         .btn-close {
+             background-color: transparent;
+         }
+         .modal-content {
+             padding: 20px;
+         }
+         .form-control:disabled, .form-control[readonly] {
+             background-color: #f5f5f5;
+         }
+         .profile-photo {
+             width: 64px;
+             height:64px;
+         }
+         .form-label {
+             font-weight: bold;
+         }
+         .btn-danger {
+             background-color: #FF3B30;
+             border-color: #FF3B30;
+         }
+         .profile-section {
+             display: flex;
+             align-items: center;
+             justify-content: space-between;
+         }
+         .profile-btns {
+            
+             display: inline;
+             flex-direction: column;
+             gap: 5px;
+         }
+     </style>
    </head>
    <body>
       <script src="../assets/static/js/initTheme.js"></script>
@@ -150,25 +198,333 @@
                         </nav>
                      </div>
                   </div>
-                  <div class="row justify-content-end">
-                     <div class="col-12 col-md-2 order-md-2">
-                        <!-- Button trigger for basic modal with margin-bottom -->
-                        <button type="button" class="btn btn-outline-primary block mb-3 float-start float-lg-end" data-bs-toggle="modal" data-bs-target="#default">
-                        Add Resident
-                        <i class="bi bi-person-fill-add"></i>
-                        </button>
-                     </div>
-                     <div class="col-12 col-md-4 order-md-2 order-first mb-3">
+                  <div class="row align-items-center justify-content-between mb-3">
+                     <div class="col-12 col-md-4 order-md-1 mb-3 mb-md-0">
                         <!-- Search input and button -->
                         <div class="input-group">
                            <input type="text" class="form-control" id="searchInput" placeholder="Search...">
                            <span class="input-group-text"><i class="bi bi-search"></i></span>
                         </div>
                      </div>
+                     <div class="col-12 col-md-4 order-md-2 d-flex justify-content-md-end">
+                        <!-- Button trigger for basic modal with margin-right -->
+                        <button type="button" class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#default">
+                        Add Resident
+                        <i class="bi bi-person-fill-add"></i>
+                        </button>
+                        <!-- Button to download CSV -->
+                        <button type="button" class="btn btn-outline-secondary" onclick="downloadExcel()">
+                        Download CSV
+                        <span class="fa-fw select-all fas"></span>
+                        </button>
+                     </div>
                   </div>
+                  
                </div>
                
-               
+<!-- The Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-lg modal-dialog-centered">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h5 class="modal-title" id="editProfileModalLabel">Edit Resident Information</h5>
+         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+       </div>
+       <div class="modal-body">
+         <form>
+           <!-- Profile Section -->
+           <div class="profile-section mb-4">
+             <div class="d-flex align-items-center">
+               <img src="https://via.placeholder.com/64" class="rounded-circle profile-photo me-3" alt="Profile Photo">
+               <div>
+                 <button type="button" class="btn btn-primary btn-sm">Upload photo</button>
+                 <button type="button" class="btn btn-secondary btn-sm">Remove photo</button>
+               </div>
+             </div>
+           </div>
+           
+           <!-- Resident Information -->
+           <h6>Resident Information</h6>
+           <div class="row">
+             <div class="col-md-4 mb-3">
+               <label for="residentId" class="form-label">Resident ID</label>
+               <input type="text" class="form-control" id="residentId" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="firstName" class="form-label">First Name</label>
+               <input type="text" class="form-control" id="firstName" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="lastName" class="form-label">Last Name</label>
+               <input type="text" class="form-control" id="lastName" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="score" class="form-label">Score</label>
+               <input type="text" class="form-control" id="score" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="occupancyStatus" class="form-label">Occupancy Status</label>
+               <input type="text" class="form-control" id="occupancyStatus" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="moveInDate" class="form-label">Move-in Date</label>
+               <input type="date" class="form-control" id="moveInDate" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="moveOutDate" class="form-label">Move-out Date</label>
+               <input type="date" class="form-control" id="moveOutDate" value="">
+             </div>
+           </div>
+           
+           <!-- Member Personal Details -->
+           <h6>Member Personal Details</h6>
+           <div class="row">
+             <div class="col-md-4 mb-3">
+               <label for="personalFirstName" class="form-label">First Name</label>
+               <input type="text" class="form-control" id="personalFirstName" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="middleName" class="form-label">Middle Name</label>
+               <input type="text" class="form-control" id="middleName" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="personalLastName" class="form-label">Last Name</label>
+               <input type="text" class="form-control" id="personalLastName" value="">
+             </div>
+           </div>
+           
+           <!-- Member Credentials -->
+           <h6>Member Credentials</h6>
+           <div class="row">
+             <div class="col-md-4 mb-3">
+               <label for="username" class="form-label">Username</label>
+               <input type="text" class="form-control" id="username" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="email" class="form-label">Email</label>
+               <input type="email" class="form-control" id="email" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="password" class="form-label">Password</label>
+               <input type="password" class="form-control" id="password" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="lastLogin" class="form-label">Last Login</label>
+               <input type="datetime-local" class="form-control" id="lastLogin" value="">
+             </div>
+           </div>
+           
+           <!-- Personal Info -->
+           <h6>Personal Info</h6>
+           <div class="row">
+             <div class="col-md-4 mb-3">
+               <label for="universityEmail" class="form-label">University Email</label>
+               <input type="email" class="form-control" id="universityEmail" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="mobileNumber" class="form-label">Mobile Number</label>
+               <input type="text" class="form-control" id="mobileNumber" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="birthdate" class="form-label">Birthdate</label>
+               <input type="date" class="form-control" id="birthdate" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="gender" class="form-label">Gender</label>
+               <input type="text" class="form-control" id="gender" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="nationality" class="form-label">Nationality</label>
+               <input type="text" class="form-control" id="nationality" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="governmentId" class="form-label">Government Issued ID</label>
+               <input type="text" class="form-control" id="governmentId" value="">
+             </div>
+           </div>
+           
+           <!-- Address Information -->
+           <h6>Address Information</h6>
+           <div class="row">
+             <div class="col-md-4 mb-3">
+               <label for="governorate" class="form-label">Governorate</label>
+               <input type="text" class="form-control" id="governorate" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="city" class="form-label">City</label>
+               <input type="text" class="form-control" id="city" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="street" class="form-label">Street</label>
+               <input type="text" class="form-control" id="street" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="additionalInfo" class="form-label">Additional Info</label>
+               <input type="text" class="form-control" id="additionalInfo" value="">
+             </div>
+           </div>
+           
+           <!-- Parent Information -->
+           <h6>Parent Information</h6>
+           <div class="row">
+             <div class="col-md-4 mb-3">
+               <label for="relation" class="form-label">Relation</label>
+               <input type="text" class="form-control" id="relation" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="parentFirstName" class="form-label">Parent's First Name</label>
+               <input type="text" class="form-control" id="parentFirstName" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="parentLastName" class="form-label">Parent's Last Name</label>
+               <input type="text" class="form-control" id="parentLastName" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="parentMobileNumber" class="form-label">Parent's Mobile Number</label>
+               <input type="text" class="form-control" id="parentMobileNumber" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="parentLocation" class="form-label">Parent's Location</label>
+               <input type="text" class="form-control" id="parentLocation" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="abroadCountry" class="form-label">If abroad, which country</label>
+               <input type="text" class="form-control" id="abroadCountry" value="">
+             </div>
+           </div>
+           
+           <!-- Faculty Information -->
+           <h6>Faculty Information</h6>
+           <div class="row">
+             <div class="col-md-4 mb-3">
+               <label for="faculty" class="form-label">Faculty</label>
+               <input type="text" class="form-control" id="faculty" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="program" class="form-label">Program</label>
+               <input type="text" class="form-control" id="program" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="level" class="form-label">Level</label>
+               <input type="text" class="form-control" id="level" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="cgpa" class="form-label">CGPA</label>
+               <input type="text" class="form-control" id="cgpa" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="certificate" class="form-label">Certificate</label>
+               <input type="text" class="form-control" id="certificate" value="">
+             </div>
+           </div>
+           
+           <!-- Payment Information -->
+           <h6>Payment Information</h6>
+           <div class="row">
+             <div class="col-md-4 mb-3">
+               <label for="housingExpenses" class="form-label">Housing Expenses</label>
+               <input type="text" class="form-control" id="housingExpenses" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="insurance" class="form-label">Insurance</label>
+               <input type="text" class="form-control" id="insurance" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="paymentStatus" class="form-label">Payment Status</label>
+               <input type="text" class="form-control" id="paymentStatus" value="">
+             </div>
+           </div>
+           
+           <!-- Reservation Information -->
+           <h6>Reservation Information</h6>
+           <div class="row">
+             <div class="col-md-4 mb-3">
+               <label for="roomNumber" class="form-label">Room Number</label>
+               <input type="text" class="form-control" id="roomNumber" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="reservationDate" class="form-label">Reservation Date</label>
+               <input type="date" class="form-control" id="reservationDate" value="">
+             </div>
+           </div>
+           
+           <!-- Maintenance Requests -->
+           <h6>Maintenance Requests</h6>
+           <div class="row">
+             <div class="col-md-6 mb-3">
+               <label for="requestDescription" class="form-label">Description of the Request</label>
+               <input type="text" class="form-control" id="requestDescription" value="">
+             </div>
+             <div class="col-md-6 mb-3">
+               <label for="requestDate" class="form-label">Request Date</label>
+               <input type="date" class="form-control" id="requestDate" value="">
+             </div>
+             <div class="col-md-6 mb-3">
+               <label for="maintenancePerson" class="form-label">Maintenance Person Assigned</label>
+               <input type="text" class="form-control" id="maintenancePerson" value="">
+             </div>
+             <div class="col-md-6 mb-3">
+               <label for="completionDate" class="form-label">Completion Date</label>
+               <input type="date" class="form-control" id="completionDate" value="">
+             </div>
+             <div class="col-md-6 mb-3">
+               <label for="requestStatus" class="form-label">Status of the Request</label>
+               <input type="text" class="form-control" id="requestStatus" value="">
+             </div>
+           </div>
+           
+           <!-- Alerts -->
+           <h6>Alerts</h6>
+           <div class="row">
+             <div class="col-md-4 mb-3">
+               <label for="alertType" class="form-label">Type</label>
+               <input type="text" class="form-control" id="alertType" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="alertDate" class="form-label">Date</label>
+               <input type="date" class="form-control" id="alertDate" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="alertDescription" class="form-label">Description</label>
+               <input type="text" class="form-control" id="alertDescription" value="">
+             </div>
+           </div>
+           
+           <!-- Expulsion Details -->
+           <h6>Expulsion Details (if applicable)</h6>
+           <div class="row">
+             <div class="col-md-4 mb-3">
+               <label for="studentId" class="form-label">Student ID (University)</label>
+               <input type="text" class="form-control" id="studentId" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="expulsionStatus" class="form-label">Expulsion Status</label>
+               <input type="text" class="form-control" id="expulsionStatus" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="expulsionDuration" class="form-label">Expulsion Duration</label>
+               <input type="text" class="form-control" id="expulsionDuration" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="term" class="form-label">Term</label>
+               <input type="text" class="form-control" id="term" value="">
+             </div>
+             <div class="col-md-4 mb-3">
+               <label for="year" class="form-label">Year</label>
+               <input type="text" class="form-control" id="year" value="">
+             </div>
+           </div>
+           
+           <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+             <button type="button" class="btn btn-primary">Save changes</button>
+           </div>
+         </form>
+       </div>
+     </div>
+   </div>
+ </div>
+ 
                <!-- Basic Tables start -->
                <section class="section">
                   <div class="card">
@@ -182,69 +538,12 @@
                                     <th>Governorate</th>
                                     <th>Faculty</th>
                                     <th>Room</th>
+                                    <th> Action </th>
+
                                  </tr>
                               </thead>
                               <tbody>
-                                 <tr>
-                                    <td>
-                                       <div class="d-flex align-items-center">
-                                          <img src="https://via.placeholder.com/40" alt="Bessie Cooper" class="profile-img me-2">
-                                          <div>
-                                             <div>Bessie Cooper</div>
-                                             <div class="text-muted">debbie.baker@example.com</div>
-                                          </div>
-                                       </div>
-                                    </td>
-                                    <td>21 Sep, 2020</td>
-                                    <td>Canada</td>
-                                    <td>Default</td>
-                                    <td>$234.00</td>
-                                 </tr>
-                                 <tr>
-                                    <td>
-                                       <div class="d-flex align-items-center">
-                                          <img src="https://via.placeholder.com/40" alt="Jessica" class="profile-img me-2">
-                                          <div>
-                                             <div>Jessica</div>
-                                             <div class="text-muted">felicia.reid@example.com</div>
-                                          </div>
-                                       </div>
-                                    </td>
-                                    <td>22 Oct, 2020</td>
-                                    <td>Réunion</td>
-                                    <td>Wholesaler</td>
-                                    <td>$234.00</td>
-                                 </tr>
-                                 <tr>
-                                    <td>
-                                       <div class="d-flex align-items-center">
-                                          <img src="https://via.placeholder.com/40" alt="Courtney Henry" class="profile-img me-2">
-                                          <div>
-                                             <div>Courtney Henry</div>
-                                             <div class="text-muted">kenzi.lawson@example.com</div>
-                                          </div>
-                                       </div>
-                                    </td>
-                                    <td>24 May, 2020</td>
-                                    <td>Åland Islands</td>
-                                    <td>Wholesaler</td>
-                                    <td>$234.00</td>
-                                 </tr>
-                                 <tr>
-                                    <td>
-                                       <div class="d-flex align-items-center">
-                                          <img src="https://via.placeholder.com/40" alt="Jerome Bell" class="profile-img me-2">
-                                          <div>
-                                             <div>Jerome Bell</div>
-                                             <div class="text-muted">deanna.curtis@example.com</div>
-                                          </div>
-                                       </div>
-                                    </td>
-                                    <td>22 Oct, 2020</td>
-                                    <td>UK</td>
-                                    <td>Default</td>
-                                    <td>$234.00</td>
-                                 </tr>
+
                               </tbody>
                            </table>
                         </div>
@@ -273,5 +572,8 @@
       <!-- Load your custom application scripts -->
       <script src="../assets/compiled/js/app.js"></script>
       <script src="../assets/static/js/pages/datatables.js"></script>
+      <script src="../assets/static/js/pages/resident.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+
    </body>
 </html>

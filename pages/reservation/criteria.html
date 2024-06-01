@@ -10,41 +10,39 @@
       <link rel="stylesheet" crossorigin href="./../../assets/compiled/css/app.css">
       <link rel="stylesheet" crossorigin href="./../../assets/compiled/css/app-dark.css">
              <style>
-        #criteriaModal .card-custom {
-            border: 1px solid #0d6efd;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            padding: 10px;
-        }
-        #criteriaModal .card-title-custom {
-            color: #0d6efd;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 1rem;
-        }
-        #criteriaModal .card-text-custom {
-            margin-left: 10px;
-            font-size: 0.875rem;
-        }
-        #criteriaModal .btn-custom {
-            background-color: #dc3545;
-            border: none;
-            padding: 5px 10px;
-        }
-        #criteriaModal .btn-custom:hover {
-            background-color: #c82333;
-        }
-        #criteriaModal .modal-footer-custom {
-            justify-content: space-between;
-        }
-        #criteriaModal .modal-body {
-            padding: 20px;
-        }
-        #criteriaModal .card-body, 
-        #criteriaModal .card-footer {
-            padding: 10px;
-        }
+        
+    .card-custom {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px  ;
+        border-color: #7b1013;
+        transition: transform 0.2s;
+    }
+
+    .card-custom:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-title-custom {
+        font-size: 1.25rem;
+        color: #9f1a27;
+    }
+
+    .card-text-custom {
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+    .btn-custom {
+        background-color: #dc3545;
+        color: #fff;
+    }
+
+    .btn-custom:hover {
+        background-color: #c82333;
+        color: #fff;
+    }
+
       </style>
    </head>
    <body>
@@ -175,7 +173,7 @@
                         <div class="d-flex align-items-center">
                            <h3 class="me-3 mb-0">Criteria</h3>
                            <!-- Question mark button trigger for guide modal -->
-                           <button type="button" class="btn btn-outline-info mb-0" data-bs-toggle="modal" data-bs-target="#guideModal">
+                           <button type="button" class="btn btn-outline-primary mb-0" data-bs-toggle="modal" data-bs-target="#guideModal">
                            <i class="fas fa-question"></i>
                            </button>
                         </div>
@@ -197,7 +195,7 @@
                   <div class="modal-dialog modal-lg">
                       <div class="modal-content">
                           <div class="modal-header">
-                              <h5 class="modal-title" id="criteriaModalLabel">Modal Title</h5>
+                              <h5 class="modal-title" id="criteriaModalLabel">Criteria</h5>
                               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
                           <div class="modal-body">
@@ -206,18 +204,7 @@
                                       <div class="card card-custom">
                                           <div class="card-body">
                                               <h5 class="card-title card-title-custom">Criteria</h5>
-                                              <div class="mb-1">
-                                                  <p class="card-text mb-1"><span class="text-primary">Description</span></p>
-                                                  <p class="card-text mb-0 card-text-custom">GPA > 15</p>
-                                              </div>
-                                              <div class="mb-1">
-                                                  <p class="card-text mb-1"><span class="text-primary">Weight</span></p>
-                                                  <p class="card-text mb-0 card-text-custom">15</p>
-                                              </div>
-                                              <div class="mb-1">
-                                                  <p class="card-text mb-1"><span class="text-primary">Time Added</span></p>
-                                                  <p class="card-text mb-0 card-text-custom">15, Mars 12:35 PM</p>
-                                              </div>
+                                              
                                           </div>
                                           <div class="card-footer d-flex justify-content-end">
                                               <button type="button" class="btn btn-danger btn-sm btn-custom" onclick="deleteCriteria()">Delete</button>
@@ -513,63 +500,7 @@
                <!-- Cards section -->
                <section id="cards">
                   <div class="row">
-                     <!-- Gender Card -->
-                     <div class="col-xl-4 col-md-6 col-sm-12" id="card">
-                        <div class="card border-0 shadow-lg rounded-3" data-bs-toggle="modal" data-bs-target="#criteriaModal">
-                           <div class="card-content">
-                              <div class="card-body text-center">
-                                 <i class="bi bi-person fs-3 mb-3 text-primary"></i> <!-- Icon above title -->
-                                 <h5 class="card-title mb-1 fw-bold text-primary">
-                                    Gender
-                                 </h5>
-                                 <p class="card-text mb-2 ">
-                                    <i class="bi bi-info-circle me-2"></i>This field represents gender information.
-                                 </p>
-                                 <p class="card-text mb-0 ">
-                                    <i class="bi bi-clock me-2"></i>Last Edited: March 18th, 2024, at 3:15 PM
-                                 </p>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                     <!-- Governorate Card -->
-                     <div class="col-xl-4 col-md-6 col-sm-12">
-                        <div class="card border-0 shadow-lg rounded-3" data-bs-toggle="modal" data-bs-target="#criteriaModal">
-                           <div class="card-content">
-                              <div class="card-body text-center">
-                                 <i class="bi bi-geo-alt fs-3 mb-3 text-primary"></i> <!-- Icon above title -->
-                                 <h5 class="card-title mb-1 fw-bold text-primary">
-                                    Governorate
-                                 </h5>
-                                 <p class="card-text mb-2 ">
-                                    <i class="bi bi-info-circle me-2"></i>This field represents governorate information .
-                                 </p>
-                                 <p class="card-text mb-0 ">
-                                    <i class="bi bi-clock me-2"></i>Last Edited: March 18th, 2024, at 3:15 PM
-                                 </p>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                     <!-- Level of Study Card -->
-                     <div class="col-xl-4 col-md-6 col-sm-12">
-                        <div class="card border-0 shadow-lg rounded-3" data-bs-toggle="modal" data-bs-target="#criteriaModal">
-                           <div class="card-content">
-                              <div class="card-body text-center">
-                                 <i class="bi bi-journal fs-3 mb-3 text-primary"></i> <!-- Icon above title -->
-                                 <h5 class="card-title mb-1 fw-bold text-primary">
-                                    Level of Study
-                                 </h5>
-                                 <p class="card-text mb-2 ">
-                                    <i class="bi bi-info-circle me-2"></i>This field represents the level of study .
-                                 </p>
-                                 <p class="card-text mb-0 ">
-                                    <i class="bi bi-clock me-2"></i>Last Edited: March 18th, 2024, at 3:15 PM
-                                 </p>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
+                     
                   </div>
                </section>
                <!-- Cards section -->
@@ -583,8 +514,11 @@
             </footer>
          </div>
       </div>
+      <!-- Load jQuery first -->
+      <script src="../../assets/extensions/jquery/jquery.min.js"></script>
       <script src="../../assets/static/js/components/dark.js"></script>
       <script src="../../assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
       <script src="../../assets/compiled/js/app.js"></script>
+      <script src="../../assets/static/js/pages/criteria.js"></script>
    </body>
 </html>

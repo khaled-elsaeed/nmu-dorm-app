@@ -7,19 +7,20 @@ var optionsProfileVisit = {
   },
   chart: {
     type: "bar",
-    height: 300,
+    height: 350,
+    fontFamily: "Arial, sans-serif",
+    foreColor: "#333",
   },
   fill: {
     opacity: 1,
+    colors: ["#95171b"],
   },
-  plotOptions: {},
   series: [
     {
-      name: "sales",
+      name: "Sales",
       data: [9, 20, 30, 20, 10, 20, 30, 20, 10, 20, 30, 20],
     },
   ],
-  colors: "#435ebe",
   xaxis: {
     categories: [
       "Jan",
@@ -35,19 +36,50 @@ var optionsProfileVisit = {
       "Nov",
       "Dec",
     ],
+    labels: {
+      style: {
+        colors: "#666",
+        fontSize: "14px",
+        fontFamily: "Arial, sans-serif",
+      },
+    },
   },
+  yaxis: {
+    labels: {
+      style: {
+        colors: "#666",
+        fontSize: "14px",
+        fontFamily: "Arial, sans-serif",
+      },
+    },
+  },
+ 
 }
+
 let optionsVisitorsProfile = {
   series: [70, 30],
   labels: ["Male", "Female"],
-  colors: ["#435ebe", "#55c6e8"],
+  colors: ["#95171b", "#d70f32"],
   chart: {
     type: "donut",
     width: "100%",
     height: "350px",
+    fontFamily: "Arial, sans-serif",
+    foreColor: "#333",
   },
   legend: {
     position: "bottom",
+    fontFamily: "Arial, sans-serif",
+    fontSize: "14px",
+    markers: {
+      width: 12,
+      height: 12,
+      radius: 6,
+    },
+    itemMargin: {
+      horizontal: 10,
+      vertical: 5,
+    },
   },
   plotOptions: {
     pie: {
@@ -56,82 +88,7 @@ let optionsVisitorsProfile = {
       },
     },
   },
-}
 
-var optionsEurope = {
-  series: [
-    {
-      name: "series1",
-      data: [310, 800, 600, 430, 540, 340, 605, 805, 430, 540, 340, 605],
-    },
-  ],
-  chart: {
-    height: 80,
-    type: "area",
-    toolbar: {
-      show: false,
-    },
-  },
-  colors: ["#5350e9"],
-  stroke: {
-    width: 2,
-  },
-  grid: {
-    show: false,
-  },
-  dataLabels: {
-    enabled: false,
-  },
-  xaxis: {
-    type: "datetime",
-    categories: [
-      "2018-09-19T00:00:00.000Z",
-      "2018-09-19T01:30:00.000Z",
-      "2018-09-19T02:30:00.000Z",
-      "2018-09-19T03:30:00.000Z",
-      "2018-09-19T04:30:00.000Z",
-      "2018-09-19T05:30:00.000Z",
-      "2018-09-19T06:30:00.000Z",
-      "2018-09-19T07:30:00.000Z",
-      "2018-09-19T08:30:00.000Z",
-      "2018-09-19T09:30:00.000Z",
-      "2018-09-19T10:30:00.000Z",
-      "2018-09-19T11:30:00.000Z",
-    ],
-    axisBorder: {
-      show: false,
-    },
-    axisTicks: {
-      show: false,
-    },
-    labels: {
-      show: false,
-    },
-  },
-  show: false,
-  yaxis: {
-    labels: {
-      show: false,
-    },
-  },
-  tooltip: {
-    x: {
-      format: "dd/MM/yy HH:mm",
-    },
-  },
-}
-
-let optionsAmerica = {
-  ...optionsEurope,
-  colors: ["#008b75"],
-}
-let optionsIndia = {
-  ...optionsEurope,
-  colors: ["#ffc434"],
-}
-let optionsIndonesia = {
-  ...optionsEurope,
-  colors: ["#dc3545"],
 }
 
 var chartProfileVisit = new ApexCharts(
@@ -139,29 +96,9 @@ var chartProfileVisit = new ApexCharts(
   optionsProfileVisit
 )
 var chartVisitorsProfile = new ApexCharts(
-  document.getElementById("chart-visitors-profile"),
+  document.getElementById("chart-attendance"),
   optionsVisitorsProfile
 )
-var chartEurope = new ApexCharts(
-  document.querySelector("#chart-europe"),
-  optionsEurope
-)
-var chartAmerica = new ApexCharts(
-  document.querySelector("#chart-america"),
-  optionsAmerica
-)
-var chartIndia = new ApexCharts(
-  document.querySelector("#chart-india"),
-  optionsIndia
-)
-var chartIndonesia = new ApexCharts(
-  document.querySelector("#chart-indonesia"),
-  optionsIndonesia
-)
 
-chartIndonesia.render()
-chartAmerica.render()
-chartIndia.render()
-chartEurope.render()
 chartProfileVisit.render()
 chartVisitorsProfile.render()

@@ -12,7 +12,12 @@ function getActionFromHash($hashedAction) {
         hash('sha256', 'apartment/create') => 'apartment/create',
         hash('sha256', 'apartment/delete') => 'apartment/delete',
         hash('sha256', 'room/create') => 'room/create',
-        hash('sha256', 'room/delete') => 'room/delete'
+        hash('sha256', 'room/delete') => 'room/delete',
+        hash('sha256', 'maintenance/start') => 'maintenance/start',
+        hash('sha256', 'maintenance/reject') => 'maintenance/reject',
+        hash('sha256', 'maintenance/complete') => 'maintenance/complete',
+
+
 
 
     ];
@@ -68,6 +73,15 @@ switch ($action) {
 
         case 'apartment/delete':
             case 'apartment/create':
+        // Handle other actions
+        // Example: $data['parameter']
+        // Perform your operations here
+        echo json_encode(["success" => true]);
+        break;
+        case 'maintenance/complete':
+        case 'maintenance/reject':
+            case 'maintenance/start':
+
         // Handle other actions
         // Example: $data['parameter']
         // Perform your operations here

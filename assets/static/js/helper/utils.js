@@ -38,7 +38,7 @@ function ajaxRequest(method, url, data, successCallback, errorCallback) {
 }
 
 // Fetch data from DB
-async function fetchDataDB(action) {
+export async function fetchDataDB(action) {
     try {
         const encodedAction = await hashAction(action);
         const rootUrl = getRootUrl();
@@ -52,7 +52,7 @@ async function fetchDataDB(action) {
 }
 
 // Post data to DB
-async function postDataDB(action, data) {
+export async function postDataDB(action, data) {
     try {
         const encodedAction = await hashAction(action);
         const encodedData = encodeData(data);
@@ -68,22 +68,23 @@ async function postDataDB(action, data) {
 
 
 
-// Put data
-async function updateDataDB(action, data) {
+// Put data to DB
+export async function updateDataDB(action, data) {
     try {
         const encodedAction = await hashAction(action);
         const encodedData = encodeData(data);
-        const url = `api?${encodedAction}&data=${encodedData}`;
-        const response = await putData(url);
+        const rootUrl = getRootUrl();
+        const url = `${rootUrl}${encodedAction}`;
+        const response = await putData(url, encodedData);
         return response;
     } catch (error) {
         console.error("Error updating data:", error);
-        throw new Error("Failed to update data");
+        throw new Error("Failed to updating data");
     }
 }
 
 // Delete data from DB
-async function deleteDataDB(action, data) {
+export async function deleteDataDB(action, data) {
     try {
         const encodedAction = await hashAction(action);
         const encodedData = encodeData(data);
@@ -123,14 +124,14 @@ function deleteData(url, data) {
 }
 
 // Utility Functions
-function getRootUrl() {
+export function getRootUrl() {
     const currentUrl = window.location.href;
     const index = currentUrl.indexOf("nmu-dorm-app");
     const rootUrl = currentUrl.substring(0, index + "nmu-dorm-app".length);
     return `${rootUrl}/src/api/?action=`;
 }
 
-function getText(titleText, inputLabel) {
+export function getText(titleText, inputLabel) {
     return new Promise((resolve, reject) => {
         Swal.fire({
             title: titleText,
@@ -157,7 +158,7 @@ function getText(titleText, inputLabel) {
 }
 
 // Function to show confirmation dialog
-function confirmAction(title, text) {
+export function confirmAction(title, text) {
     return new Promise((resolve, reject) => {
         Swal.fire({
             title: title,
@@ -178,7 +179,7 @@ function confirmAction(title, text) {
 }
 
 // Show success alert
-function handleSuccess(message) {
+export function handleSuccess(message) {
     Swal.fire({
         title: "Success!",
         text: message,
@@ -187,7 +188,7 @@ function handleSuccess(message) {
 }
 
 // Show error alert
-function handleFailure(message) {
+export function handleFailure(message) {
     Swal.fire({
         title: "Error!",
         text: message,
@@ -195,7 +196,7 @@ function handleFailure(message) {
     });
 }
 
-function handleWarning(message) {
+export function handleWarning(message) {
     // Display a warning alert if any field is empty
     Swal.fire({
         icon: 'warning',
@@ -205,8 +206,45 @@ function handleWarning(message) {
     });
 }
 
-function clearInputFields(inputFieldIds) {
+export function clearInputFields(inputFieldIds) {
     inputFieldIds.forEach(id => {
         $(`#${id}`).val('');
     });
 }
+
+// Function to apply blur effect to the page content
+export function applyBlurEffect() {
+    const pageContent = document.querySelector('#page-main');
+    pageContent.classList.add('blur');
+ }
+ 
+ // Function to remove blur effect from the page content
+ export function removeBlurEffect() {
+    const pageContent = document.querySelector('#page-main');
+    pageContent.classList.remove('blur');
+ }
+ 
+ // Function to create and display the loader with Lottie animation
+ export function showLoader() {
+    const loaderContainer = document.createElement('div');
+    loaderContainer.className = 'backdrop';
+    document.body.appendChild(loaderContainer);
+ 
+    const animData = {
+        container: loaderContainer,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: '../assets/static/loader/loader.json' // Path to your Lottie JSON file
+    };
+ 
+    lottie.loadAnimation(animData);
+ }
+ 
+ // Function to hide the loader
+ export function hideLoader() {
+    const loaderContainer = document.querySelector('.backdrop');
+    if (loaderContainer) {
+        loaderContainer.remove();
+    }
+ }
