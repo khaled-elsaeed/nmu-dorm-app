@@ -1,3 +1,15 @@
+// Utility Functions
+import { confirmAction, handleFailure, handleSuccess, applyBlurEffect, removeBlurEffect, showLoader, hideLoader, postDataDB, deleteDataDB } from "../helper/utils.js";
+
+function attachEventListener(buttonSelector, eventType, handler) {
+    $(document).on(eventType, buttonSelector, function () {
+       const apartmentId = $(this).data('id');
+       const apartmentNumber = $(this).data('number');
+       handler(apartmentId, apartmentNumber);
+    });
+ }
+
+
 let apartments = [];
 let buildings = [];
 
@@ -51,24 +63,13 @@ function fetchApartments() {
    ];
 }
 
-function populateBuildingSelect() {
+function populateTable() {
 
-   const buildingSelect = $('#apartmentBuildingNumber');
-   buildingSelect.empty();
-   buildingSelect.append(`<option value="" disabled selected>Select Building</option>`);
-   buildings.forEach(building => {
-      buildingSelect.append(`<option value="${building.id}">${building.number}</option>`);
+   const table = $("#table1").DataTable();
+   apartments.forEach(apartment => {
+      const row = constructTableRow(apartment);
+      table.row.add($(row)).draw();
    });
-}
-
-function generateOccupancyBadge(occupancyStatus) {
-
-   const badgeMap = {
-      'vacant': '<span class="badge bg-success">Vacant</span>',
-      'fullyOccupied': '<span class="badge bg-danger">Fully Occupied</span>',
-      'partiallyOccupied': '<span class="badge bg-warning">Partially Occupied</span>',
-   };
-   return badgeMap[occupancyStatus] || `<span class="badge">${occupancyStatus}</span>`;
 }
 
 function constructTableRow(apartment) {
@@ -81,67 +82,33 @@ function constructTableRow(apartment) {
             <td>${apartment.vacantRoom}</td>
             <td>${occupancyBadge}</td>
             <td>
-                <button type="button" class="btn btn-outline-danger btn-sm action-button" title="Delete" onclick="handleDeleteApartment(${apartment.id},'${apartment.buildingId}', '${apartment.number}')"><i class="fas fa-trash"></i> Delete</button>
+               <button type="button" class="btn btn-outline-danger btn-sm action-button remove-apartment-btn" data-id="${apartment.id}" data-number="${apartment.number}" title="Remove"><i class="fas fa-trash"></i> Delete</button>
             </td>
         </tr>
     `;
 }
 
-function populateTable() {
+function generateOccupancyBadge(occupancyStatus) {
 
-   const table = $("#table1").DataTable();
-   apartments.forEach(apartment => {
-      const row = constructTableRow(apartment);
-      table.row.add($(row)).draw();
-   });
-}
-
-function downloadExcel() {
-
-   const csvHeader = ["Apartment Number", "Building", "Room (vacant)"];
-   const csvRows = [csvHeader];
-
-   apartments.forEach(apartment => {
-      const row = [
-         apartment.number,
-         apartment.building,
-         apartment.vacantRoom,
-      ];
-      csvRows.push(row);
-   });
-
-   const wb = XLSX.utils.book_new();
-   const ws = XLSX.utils.aoa_to_sheet(csvRows);
-   XLSX.utils.book_append_sheet(wb, ws, "Apartments");
-
-   const now = new Date();
-   const filename = `apartments_${now.toISOString().replace(/[:]/g, '-')}.xlsx`;
-
-   XLSX.writeFile(wb, filename);
-}
-
-function handleDeleteApartment(id, apartmentNumber) {
-
-   const apartmentData = {
-      apartmentId: id
+   const badgeMap = {
+      'vacant': '<span class="badge bg-success">Vacant</span>',
+      'fullyOccupied': '<span class="badge bg-danger">Fully Occupied</span>',
+      'partiallyOccupied': '<span class="badge bg-warning">Partially Occupied</span>',
    };
-   confirmAction("Confirm Delete", `Are you sure you want to delete apartment ${apartmentNumber}?`)
-      .then(() => {
-         deleteDataDB("apartment/delete", apartmentData)
-            .then(() => {
-               handleSuccess(`Apartment ${apartmentNumber} has been deleted successfully.`);
-            })
-            .catch((error) => {
-               handleFailure(`Failed to delete apartment ${apartmentNumber}. Please try again later. Error: ${error}`);
-            });
-      })
-      .catch(() => {
-         console.log('Delete canceled');
-      });
+   return badgeMap[occupancyStatus] || `<span class="badge">${occupancyStatus}</span>`;
 }
 
-function handleAddApartment() {
+function populateBuildingSelect() {
 
+   const buildingSelect = $('#apartmentBuildingNumber');
+   buildingSelect.empty();
+   buildingSelect.append(`<option value="" disabled selected>Select Building</option>`);
+   buildings.forEach(building => {
+      buildingSelect.append(`<option value="${building.id}">${building.number}</option>`);
+   });
+}
+
+function getNewApartmentData(){
    const apartmentNumber = $('#apartmentNumber').val();
    const buildingId = $('#apartmentBuildingNumber').val();
 
@@ -156,33 +123,90 @@ function handleAddApartment() {
       buildingId: buildingId,
    };
 
-
-   confirmAction('Confirm Addition', `Are you sure you want to add apartment ${apartmentData.number}?`)
-      .then(() => {
-
-         return postDataDB("apartment/create", apartmentData);
-      })
-      .then(() => {
-         handleSuccess(`Apartment ${apartmentData.number} has been added successfully.`);
-
-         clearInputFields(['apartmentNumber', 'apartmentBuildingNumber']);
-
-         $('#addApartmentModal').modal('hide');
-      })
-      .catch((error) => {
-         if (error !== 'User cancelled the action') {
-            handleFailure(`Failed to add apartment ${apartmentData.number}. Please try again later. Error: ${error}`);
-            $('#addApartmentModal').modal('hide');
-         }
-      });
+   return apartmentData;
 }
 
 
-$(document).ready(function () {
-   fetchApartments();
-   populateTable();
-   fetchBuildings();
-   $("#addApartmentBtn").on("click", function () {
-      handleAddApartment();
+
+function handleAddApartment() {
+
+   
+   const apartmentData = getNewApartmentData();
+
+   confirmAction("Confirm Complete", `Are you sure you want to add the apartment ${apartmentData.number}?`)
+    .then(() => {
+       postDataDB("apartment/add", { apartmentNumber : apartmentData.number , buildingId : apartmentData.buildingId })
+          .then(() => handleSuccess(`apartment ${apartmentData.number} has been added successfully.`))
+          .catch(() => handleFailure(`Failed to add the apartment ${apartmentData.number}. Please try again later.`));
+    })
+    .catch(() => console.log('Add action canceled'));
+}
+
+
+function handleRemoveApartment(apartmentId, apartmentNumber) {
+
+   confirmAction("Confirm Remove", `Are you sure you want to remove the apartment ${apartmentNumber}?`)
+   .then(() => {
+      deleteDataDB("apartment/remove", { apartmentId : apartmentId })
+         .then(() => handleSuccess(`apartment ${apartmentNumber} has been removed successfully.`))
+         .catch(() => handleFailure(`Failed to remove the apartment ${apartmentNumber}. Please try again later.`));
+   })
+   .catch(() => console.log('Complete action canceled'));
+}
+
+
+
+function downloadExcel() {
+   const csvHeader = ["Apartment Number", "Building", "Room (vacant)"];
+   const csvRows = [csvHeader];
+
+   apartments.forEach(apartment => {
+       const row = [
+         apartment.number,
+         apartment.building,
+         apartment.vacantRoom,
+       ];
+       csvRows.push(row);
    });
+
+   const wb = XLSX.utils.book_new();
+   const ws = XLSX.utils.aoa_to_sheet(csvRows);
+   XLSX.utils.book_append_sheet(wb, ws, "Apartments");
+
+   const now = new Date();
+   const year = now.getFullYear();
+   const month = String(now.getMonth() + 1).padStart(2, '0');
+   const day = String(now.getDate()).padStart(2, '0');
+   const hours = String(now.getHours()).padStart(2, '0');
+   const minutes = String(now.getMinutes()).padStart(2, '0');
+   const seconds = String(now.getSeconds()).padStart(2, '0');
+
+   const filename = `apartments${year}-${month}-${day}_${hours}-${minutes}-${seconds}.xlsx`;
+
+   XLSX.writeFile(wb, filename);
+}
+
+// Document Ready Function
+$(document).ready(function () {
+   applyBlurEffect();
+   showLoader();
+
+   // Simulate fetching data after a delay
+   setTimeout(() => {
+      fetchApartments();
+      populateTable();
+      fetchBuildings();
+      hideLoader();
+      removeBlurEffect();
+   }, 3000); // Simulate 5 seconds delay for fetching data
+
+   // Attach event listeners to buttons
+   attachEventListener('.remove-apartment-btn', 'click', handleRemoveApartment);
+   attachEventListener('.add-apartment-btn', 'click', handleAddApartment);
+
+   attachEventListener('.csv-btn', 'click', downloadExcel);
 });
+
+
+
+

@@ -1,4 +1,6 @@
-// Function to attach event listener to buttons
+// Utility Functions
+import { confirmAction, handleFailure, handleSuccess, applyBlurEffect, removeBlurEffect, showLoader, hideLoader } from "../helper/utils.js";
+
 function attachEventListener(buttonSelector, eventType, handler) {
    $(document).on(eventType, buttonSelector, function () {
       const maintenanceId = $(this).data('id');
@@ -7,12 +9,9 @@ function attachEventListener(buttonSelector, eventType, handler) {
    });
 }
 
-// Import necessary functions from utilities
-import { confirmAction, handleFailure, handleSuccess, applyBlurEffect, removeBlurEffect, showLoader, hideLoader } from "../helper/utils.js";
-
+// Simulated Maintenance Requests Data
 let maintenanceRequests = [];
 
-// Fetch maintenance requests (simulated)
 function fetchMaintenanceRequests() {
    maintenanceRequests = [
       { maintenanceId: 1, name: 'Khaled Tahran', location: 'B1A12R5', date: '2024-05-01', equipment: 'Generator', description: 'Oil change and filter replacement', technician: 'John Doe', status: 'complete' },
@@ -29,7 +28,44 @@ function fetchMaintenanceRequests() {
    ];
 }
 
-// Generate action buttons based on status
+// Populate the Table with Maintenance Requests
+function populateTable() {
+   const table = $("#table1").DataTable();
+   maintenanceRequests.forEach(request => {
+      const row = constructTableRow(request);
+      table.row.add($(row)).draw();
+   });
+}
+
+// Construct a Table Row for Each Request
+function constructTableRow(request) {
+   const statusBadge = generateStatusBadge(request.status);
+   const actionContent = generateActionContent(request.status, request.maintenanceId, request.location);
+   const technicianName = request.technician ? request.technician : 'No one';
+   return `
+      <tr>
+         <td>${request.name}</td>
+         <td>${request.location}</td>
+         <td>${request.date}</td>
+         <td>${request.equipment}</td>
+         <td>${request.description}</td>
+         <td>${technicianName}</td>
+         <td>${statusBadge}</td>
+         <td>${actionContent}</td>
+      </tr>`;
+}
+
+// Generate Status Badges Based on Status
+function generateStatusBadge(status) {
+   const badgeMap = {
+      'complete': '<span class="badge bg-success">Complete</span>',
+      'pending': '<span class="badge bg-warning">Pending</span>',
+      'inProgress': '<span class="badge bg-info">In Progress</span>',
+   };
+   return badgeMap[status] || `<span class="badge">${status}</span>`;
+}
+
+// Generate Action Buttons Based on Status
 function generateActionContent(status, maintenanceId, room) {
    switch (status) {
       case 'complete':
@@ -52,72 +88,8 @@ function generateActionContent(status, maintenanceId, room) {
    }
 }
 
-// Generate status badges based on status
-function generateStatusBadge(status) {
-   const badgeMap = {
-      'complete': '<span class="badge bg-success">Complete</span>',
-      'pending': '<span class="badge bg-warning">Pending</span>',
-      'inProgress': '<span class="badge bg-info">In Progress</span>',
-   };
-   return badgeMap[status] || `<span class="badge">${status}</span>`;
-}
 
-// Construct a table row for each request
-function constructTableRow(request) {
-   const statusBadge = generateStatusBadge(request.status);
-   const actionContent = generateActionContent(request.status, request.maintenanceId, request.location);
-   const technicianName = request.technician ? request.technician : 'No one';
-   return `
-      <tr>
-         <td>${request.name}</td>
-         <td>${request.location}</td>
-         <td>${request.date}</td>
-         <td>${request.equipment}</td>
-         <td>${request.description}</td>
-         <td>${technicianName}</td>
-         <td>${statusBadge}</td>
-         <td>${actionContent}</td>
-      </tr>`;
-}
-
-// Populate the table with maintenance requests
-function populateTable() {
-   const table = $("#table1").DataTable();
-   maintenanceRequests.forEach(request => {
-      const row = constructTableRow(request);
-      table.row.add($(row)).draw();
-   });
-}
-
-// Download maintenance requests as an Excel file
-function downloadExcel() {
-   const csvHeader = ["Resident", "Room", "Date", "Equipment", "Task Description", "Performed By", "Status"];
-   const csvRows = [csvHeader];
-
-   maintenanceRequests.forEach(request => {
-      const row = [
-         request.name,
-         request.location,
-         request.date,
-         request.equipment,
-         request.description,
-         request.technician,
-         request.status
-      ];
-      csvRows.push(row);
-   });
-
-   const wb = XLSX.utils.book_new();
-   const ws = XLSX.utils.aoa_to_sheet(csvRows);
-   XLSX.utils.book_append_sheet(wb, ws, "MaintenanceRequests");
-
-   const now = new Date();
-   const filename = `maintenanceRequests_${now.toISOString().replace(/[:.]/g, '-')}.xlsx`;
-
-   XLSX.writeFile(wb, filename);
-}
-
-// Event handlers for maintenance actions
+// Event Handlers for Maintenance Actions
 function handleStart(maintenanceId, room) {
    confirmAction("Confirm Start", `Are you sure you want to start the task for room ${room}?`)
       .then(() => {
@@ -156,7 +128,36 @@ function handleComplete(maintenanceId, room) {
       .catch(() => console.log('Complete action canceled'));
 }
 
-// Document ready function
+
+// Download Maintenance Requests as an Excel File
+function downloadExcel() {
+   const csvHeader = ["Resident", "Room", "Date", "Equipment", "Task Description", "Performed By", "Status"];
+   const csvRows = [csvHeader];
+
+   maintenanceRequests.forEach(request => {
+      const row = [
+         request.name,
+         request.location,
+         request.date,
+         request.equipment,
+         request.description,
+         request.technician,
+         request.status
+      ];
+      csvRows.push(row);
+   });
+
+   const wb = XLSX.utils.book_new();
+   const ws = XLSX.utils.aoa_to_sheet(csvRows);
+   XLSX.utils.book_append_sheet(wb, ws, "MaintenanceRequests");
+
+   const now = new Date();
+   const filename = `maintenanceRequests_${now.toISOString().replace(/[:.]/g, '-')}.xlsx`;
+
+   XLSX.writeFile(wb, filename);
+}
+
+// Document Ready Function
 $(document).ready(function () {
    applyBlurEffect();
    showLoader();
@@ -174,5 +175,4 @@ $(document).ready(function () {
    attachEventListener('.complete-btn', 'click', handleComplete);
    attachEventListener('.reject-btn', 'click', handleReject);
    attachEventListener('.csv-btn', 'click', downloadExcel);
-
 });

@@ -1,128 +1,3 @@
-// Function to hash action using SHA-256 and base64 encoding
-async function hashAction(action) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(action);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    return btoa(hashHex);
-}
-
-// Function to encode data
-function encodeData(data) {
-    const jsonString = JSON.stringify(data);
-    const encodedData = btoa(jsonString);
-    return encodeURIComponent(encodedData);
-}
-
-// AJAX request function
-function ajaxRequest(method, url, data, successCallback, errorCallback) {
-    var xhr = new XMLHttpRequest();
-    xhr.open(method, url, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                var response = JSON.parse(xhr.responseText);
-                if (response.success) {
-                    successCallback(response.data || null);
-                } else {
-                    errorCallback(response.error);
-                }
-            } else {
-                errorCallback('HTTP Error: ' + xhr.status);
-            }
-        }
-    };
-    xhr.send(JSON.stringify(data));
-}
-
-// Fetch data from DB
-export async function fetchDataDB(action) {
-    try {
-        const encodedAction = await hashAction(action);
-        const rootUrl = getRootUrl();
-        const url = `${rootUrl}${encodedAction}`;
-        const data = await getData(url);
-        return data;
-    } catch (error) {
-        console.error("Error in fetching data from db:", error);
-        throw new Error("Failed to fetch data from database");
-    }
-}
-
-// Post data to DB
-export async function postDataDB(action, data) {
-    try {
-        const encodedAction = await hashAction(action);
-        const encodedData = encodeData(data);
-        const rootUrl = getRootUrl();
-        const url = `${rootUrl}${encodedAction}`;
-        const response = await postData(url, encodedData);
-        return response;
-    } catch (error) {
-        console.error("Error inserting data:", error);
-        throw new Error("Failed to inserting data");
-    }
-}
-
-
-
-// Put data to DB
-export async function updateDataDB(action, data) {
-    try {
-        const encodedAction = await hashAction(action);
-        const encodedData = encodeData(data);
-        const rootUrl = getRootUrl();
-        const url = `${rootUrl}${encodedAction}`;
-        const response = await putData(url, encodedData);
-        return response;
-    } catch (error) {
-        console.error("Error updating data:", error);
-        throw new Error("Failed to updating data");
-    }
-}
-
-// Delete data from DB
-export async function deleteDataDB(action, data) {
-    try {
-        const encodedAction = await hashAction(action);
-        const encodedData = encodeData(data);
-        const rootUrl = getRootUrl();
-        const url = `${rootUrl}${encodedAction}`;
-        const response = await deleteData(url, encodedData);
-        return response;
-    } catch (error) {
-        console.error("Error deleting data:", error);
-        throw new Error("Failed to delete data");
-    }
-}
-
-// Promisified AJAX Request Functions
-function getData(url) {
-    return new Promise((resolve, reject) => {
-        ajaxRequest('GET', url, null, resolve, reject);
-    });
-}
-
-function postData(url, data) {
-    return new Promise((resolve, reject) => {
-        ajaxRequest('POST', url, data, resolve, reject);
-    });
-}
-
-function putData(url, data) {
-    return new Promise((resolve, reject) => {
-        ajaxRequest('PUT', url, data, resolve, reject);
-    });
-}
-
-function deleteData(url, data) {
-    return new Promise((resolve, reject) => {
-        ajaxRequest('DELETE', url, data, resolve, reject);
-    });
-}
-
 // Utility Functions
 export function getRootUrl() {
     const currentUrl = window.location.href;
@@ -157,7 +32,6 @@ export function getText(titleText, inputLabel) {
     });
 }
 
-// Function to show confirmation dialog
 export function confirmAction(title, text) {
     return new Promise((resolve, reject) => {
         Swal.fire({
@@ -178,7 +52,6 @@ export function confirmAction(title, text) {
     });
 }
 
-// Show success alert
 export function handleSuccess(message) {
     Swal.fire({
         title: "Success!",
@@ -187,7 +60,6 @@ export function handleSuccess(message) {
     });
 }
 
-// Show error alert
 export function handleFailure(message) {
     Swal.fire({
         title: "Error!",
@@ -197,7 +69,6 @@ export function handleFailure(message) {
 }
 
 export function handleWarning(message) {
-    // Display a warning alert if any field is empty
     Swal.fire({
         icon: 'warning',
         title: 'Warning',
@@ -212,39 +83,156 @@ export function clearInputFields(inputFieldIds) {
     });
 }
 
-// Function to apply blur effect to the page content
 export function applyBlurEffect() {
-    const pageContent = document.querySelector('#page-main');
+    const pageContent = document.querySelector('#app');
     pageContent.classList.add('blur');
- }
- 
- // Function to remove blur effect from the page content
- export function removeBlurEffect() {
-    const pageContent = document.querySelector('#page-main');
+}
+
+export function removeBlurEffect() {
+    const pageContent = document.querySelector('#app');
     pageContent.classList.remove('blur');
- }
- 
- // Function to create and display the loader with Lottie animation
- export function showLoader() {
-    const loaderContainer = document.createElement('div');
-    loaderContainer.className = 'backdrop';
+}
+
+export function showLoader() {
+    const loaderContainer = document.getElementById('preloader');
+    loaderContainer.className = 'preloader';
     document.body.appendChild(loaderContainer);
- 
+
+    const rootUrl = window.location.origin; // Get the root URL dynamically
     const animData = {
         container: loaderContainer,
         renderer: 'svg',
         loop: true,
         autoplay: true,
-        path: '../assets/static/loader/loader.json' // Path to your Lottie JSON file
+        path: `${rootUrl}/project/nmu-dorm-app/assets/static/loader/loader.json` // Construct the full path to the Lottie JSON file
     };
- 
+
     lottie.loadAnimation(animData);
- }
- 
- // Function to hide the loader
- export function hideLoader() {
-    const loaderContainer = document.querySelector('.backdrop');
+}
+
+export function hideLoader() {
+    const loaderContainer = document.querySelector('.preloader');
+    const app = document.getElementById('app');
+    app.style.display = 'block';
     if (loaderContainer) {
         loaderContainer.remove();
     }
- }
+}
+
+// Promisified AJAX Request Functions
+function ajaxRequest(method, url, data, successCallback, errorCallback) {
+    const xhr = new XMLHttpRequest();
+    xhr.open(method, url, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                const response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    successCallback(response.data || null);
+                } else {
+                    errorCallback(response.error);
+                }
+            } else {
+                errorCallback('HTTP Error: ' + xhr.status);
+            }
+        }
+    };
+    xhr.send(JSON.stringify(data));
+}
+
+function getData(url) {
+    return new Promise((resolve, reject) => {
+        ajaxRequest('GET', url, null, resolve, reject);
+    });
+}
+
+function postData(url, data) {
+    return new Promise((resolve, reject) => {
+        ajaxRequest('POST', url, data, resolve, reject);
+    });
+}
+
+function putData(url, data) {
+    return new Promise((resolve, reject) => {
+        ajaxRequest('PUT', url, data, resolve, reject);
+    });
+}
+
+function deleteData(url, data) {
+    return new Promise((resolve, reject) => {
+        ajaxRequest('DELETE', url, data, resolve, reject);
+    });
+}
+
+// Hashing and Encoding Functions
+async function hashAction(action) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(action);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return btoa(hashHex);
+}
+
+function encodeData(data) {
+    const jsonString = JSON.stringify(data);
+    const encodedData = btoa(jsonString);
+    return encodeURIComponent(encodedData);
+}
+
+// Database Interaction Functions
+export async function fetchDataDB(action) {
+    try {
+        const encodedAction = await hashAction(action);
+        const rootUrl = getRootUrl();
+        const url = `${rootUrl}${encodedAction}`;
+        const data = await getData(url);
+        return data;
+    } catch (error) {
+        console.error("Error in fetching data from db:", error);
+        throw new Error("Failed to fetch data from database");
+    }
+}
+
+export async function postDataDB(action, data) {
+    try {
+        const encodedAction = await hashAction(action);
+        const encodedData = encodeData(data);
+        const rootUrl = getRootUrl();
+        const url = `${rootUrl}${encodedAction}`;
+        const response = await postData(url, encodedData);
+        return response;
+    } catch (error) {
+        console.error("Error inserting data:", error);
+        throw new Error("Failed to insert data");
+    }
+}
+
+export async function updateDataDB(action, data) {
+    try {
+        const encodedAction = await hashAction(action);
+        const encodedData = encodeData(data);
+        const rootUrl = getRootUrl();
+        const url = `${rootUrl}${encodedAction}`;
+        const response = await putData(url, encodedData);
+        return response;
+    } catch (error) {
+        console.error("Error updating data:", error);
+        throw new Error("Failed to update data");
+    }
+}
+
+export async function deleteDataDB(action, data) {
+    try {
+        const encodedAction = await hashAction(action);
+        const encodedData = encodeData(data);
+        const rootUrl = getRootUrl();
+        const url = `${rootUrl}${encodedAction}`;
+        const response = await deleteData(url, encodedData);
+        return response;
+    } catch (error) {
+        console.error("Error deleting data:", error);
+        throw new Error("Failed to delete data");
+    }
+}

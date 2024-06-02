@@ -1,3 +1,14 @@
+// Utility Functions
+import { confirmAction, handleFailure, handleSuccess, applyBlurEffect, removeBlurEffect, showLoader, hideLoader, postDataDB, deleteDataDB } from "../helper/utils.js";
+
+function attachEventListener(buttonSelector, eventType, handler) {
+    $(document).on(eventType, buttonSelector, function () {
+       const buildingId = $(this).data('id');
+       const buildingNumber = $(this).data('number');
+       handler(buildingId, buildingNumber);
+    });
+ }
+
 let buildings = [];
 
 function fetchBuildings() {
@@ -26,13 +37,12 @@ function fetchBuildings() {
     ];
 }
 
-function generateOccupancyBadge(occupancyStatus) {
-    const badgeMap = {
-        'vacant': '<span class="badge bg-success">Vacant</span>',
-        'fullyOccupied': '<span class="badge bg-danger">Fully Occupied</span>',
-        'partiallyOccupied': '<span class="badge bg-warning">Partially Occupied</span>',
-    };
-    return badgeMap[occupancyStatus] || `<span class="badge">${occupancyStatus}</span>`;
+function populateTable() {
+    const table = $("#table1").DataTable();
+    buildings.forEach(building => {
+        const row = constructTableRow(building);
+        table.row.add($(row)).draw();
+    });
 }
 
 function constructTableRow(building) {
@@ -44,36 +54,26 @@ function constructTableRow(building) {
             <td>${building.apartment}</td>
             <td>${occupancyBadge}</td>
             <td>
-                <button type="button" class="btn btn-outline-danger btn-sm action-button" title="Delete" onclick="handleDeleteBuilding(${building.id}, '${building.number}')"><i class="fas fa-trash"></i> Delete</button>
+                <button type="button" class="btn btn-outline-danger btn-sm action-button remove-building-btn" data-id="${building.id}" data-number="${building.number}" title="Remove"><i class="fas fa-trash"></i> Delete</button>
             </td>
         </tr>
     `;
 }
 
 
-function handleDeleteBuilding(id, buildingNumber) {
-    const buildingData = {
-        buildingId: id
+function generateOccupancyBadge(occupancyStatus) {
+    const badgeMap = {
+        'vacant': '<span class="badge bg-success">Vacant</span>',
+        'fullyOccupied': '<span class="badge bg-danger">Fully Occupied</span>',
+        'partiallyOccupied': '<span class="badge bg-warning">Partially Occupied</span>',
     };
-    confirmAction("Confirm Delete", `Are you sure you want to delete building ${buildingNumber}?`)
-        .then(() => {
-            deleteDataDB("building/delete", buildingData)
-                .then(() => {
-                    handleSuccess(`Building ${buildingNumber} has been deleted successfully.`);
-                })
-                .catch((error) => {
-                    handleFailure(`Failed to delete building ${buildingNumber}. Please try again later. Error: ${error}`);
-                });
-        })
-        .catch(() => {
-            console.log('Delete canceled');
-        });
+    return badgeMap[occupancyStatus] || `<span class="badge">${occupancyStatus}</span>`;
 }
 
-function handleAddBuilding() {
+
+function getNewBuildingData(){
     const buildingNumber = $('#buildingNumber').val();
     const buildingCategory = $('#buildingCategory').val();
-
     // Validate input
     if (!buildingNumber || !buildingCategory) {
         handleWarning("Please Fill All Fields !");
@@ -82,41 +82,39 @@ function handleAddBuilding() {
 
     const buildingData = {
         number: buildingNumber,
-        category: buildingCategory,
-        apartment: '',
-        occupancy: 'Vacant'
+        category: buildingCategory
     };
 
-       // Confirm action
-       confirmAction('Confirm Addition', `Are you sure you want to add building ${buildingData.number}?`)
-       .then(() => {
-           // Post data to the server
-           return postDataDB("apartment/create", buildingData);
-       })
-       .then(() => {
-           handleSuccess(`Apartment ${buildingData.number} has been added successfully.`);
-           clearInputFields(['apartmentNumber', 'apartmentBuildingNumber']);
-           $('#addBuildingModal').modal('hide');
-       })
-       .catch((error) => {
-           if (error !== 'User cancelled the action') {
-               handleFailure(`Failed to add apartment ${buildingData.number}. Please try again later. Error: ${error}`);
-               $('#addBuildingModal').modal('hide');
-           }
-       });
+    return buildingData;
+}
+
+function handleAddBuilding() {
+
+    const buildingData = getNewBuildingData();
+
+    confirmAction("Confirm Complete", `Are you sure you want to add the building ${buildingData.number}?`)
+    .then(() => {
+       postDataDB("building/add", { buildingNumber : buildingData.number , buildingCategory : buildingData.category })
+          .then(() => handleSuccess(`Building ${buildingData.number} has been added successfully.`))
+          .catch(() => handleFailure(`Failed to add the building ${buildingData.number}. Please try again later.`));
+    })
+    .catch(() => console.log('Add action canceled'));
+}
+
+function handleRemoveBuilding(buildingId, buildingNumber) {
+
+    confirmAction("Confirm Remove", `Are you sure you want to remove the building ${buildingNumber}?`)
+      .then(() => {
+         deleteDataDB("building/remove", { buildingId : buildingId })
+            .then(() => handleSuccess(`Building ${buildingNumber} has been removed successfully.`))
+            .catch(() => handleFailure(`Failed to remove the building ${buildingNumber}. Please try again later.`));
+      })
+      .catch(() => console.log('Complete action canceled'));
 }
 
 
 
 
-
-function populateTable() {
-    const table = $("#table1").DataTable();
-    buildings.forEach(building => {
-        const row = constructTableRow(building);
-        table.row.add($(row)).draw();
-    });
-}
 
 function downloadExcel() {
     const csvHeader = ["Building Number", "Category", "Apartment (vacant)"];
@@ -149,11 +147,22 @@ function downloadExcel() {
 }
 
 
-// Initialization
-$(document).ready(function() {
-    fetchBuildings();
-    populateTable();
-    $("#addBuildingBtn").on("click", function() {
-        handleAddBuilding();
-    });
-});
+// Document Ready Function
+$(document).ready(function () {
+    applyBlurEffect();
+    showLoader();
+ 
+    // Simulate fetching data after a delay
+    setTimeout(() => {
+        fetchBuildings();
+        populateTable();
+       hideLoader();
+       removeBlurEffect();
+    }, 5000); // Simulate 5 seconds delay for fetching data
+ 
+    // Attach event listeners to buttons
+    attachEventListener('.remove-building-btn', 'click', handleRemoveBuilding);
+    attachEventListener('.add-building-btn', 'click', handleAddBuilding);
+
+    attachEventListener('.csv-btn', 'click', downloadExcel);
+ });
