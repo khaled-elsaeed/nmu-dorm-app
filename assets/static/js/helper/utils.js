@@ -52,6 +52,31 @@ export function confirmAction(title, text) {
     });
 }
 
+export function downloadExcel(entity, data, headers) {
+    const csvRows = [headers];
+
+    data.forEach(item => {
+        const row = headers.map(header => item[header.toLowerCase().replace(/ /g, '')]);
+        csvRows.push(row);
+    });
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(csvRows);
+    XLSX.utils.book_append_sheet(wb, ws, entity.charAt(0).toUpperCase() + entity.slice(1));
+
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+
+    const filename = `${entity.charAt(0).toUpperCase() + entity.slice(1)}_${year}-${month}-${day}_${hours}-${minutes}-${seconds}.xlsx`;
+
+    XLSX.writeFile(wb, filename);
+}
+
 export function handleSuccess(message) {
     Swal.fire({
         title: "Success!",
