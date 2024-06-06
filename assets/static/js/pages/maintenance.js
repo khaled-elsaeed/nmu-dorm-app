@@ -1,5 +1,5 @@
 // Utility Functions
-import { confirmAction, handleFailure, handleSuccess, applyBlurEffect, removeBlurEffect, showLoader, hideLoader } from "../helper/utils.js";
+import { confirmAction,getText,updateDataDB, handleFailure, handleSuccess, applyBlurEffect, removeBlurEffect, showLoader, hideLoader } from "../helper/utils.js";
 
 function attachEventListener(buttonSelector, eventType, handler) {
    $(document).on(eventType, buttonSelector, function () {
@@ -88,21 +88,25 @@ function generateActionContent(status, maintenanceId, room) {
    }
 }
 
-
-// Event Handlers for Maintenance Actions
 function handleStart(maintenanceId, room) {
-   confirmAction("Confirm Start", `Are you sure you want to start the task for room ${room}?`)
-      .then(() => {
-         getText("Enter the name of the person who will take the task", "Name")
-            .then(name => {
-               updateDataDB("maintenance/start", { maintenanceId })
-                  .then(() => handleSuccess(`Task for room ${room} has been initiated successfully for ${name}.`))
-                  .catch(() => handleFailure(`Failed to start the task for room ${room}. Please try again later.`));
+      confirmAction("Confirm Start", `Are you sure you want to start the task for room ${room}?`)
+         .then(() => {
+            getText("Enter the name of the person who will take the task", "Name")
+               .then(name => {
+                  updateDataDB("maintenance/start", { maintenanceId })
+                     .then(() => {
+                         handleSuccess(`Task for room ${room} has been initiated successfully for ${name}.`);
+                         populateTable();
+                     })
+                     .catch(() => handleFailure(`Failed to start the task for room ${room}. Please try again later.`));
+               })
+               .catch(() => console.log('Input canceled'));
             })
-            .catch(() => console.log('Input canceled'));
-      })
-      .catch(() => console.log('Start action canceled'));
+         .catch(() => console.log('start action canceled'));
 }
+
+
+
 
 function handleReject(maintenanceId, room) {
    confirmAction("Confirm Rejection", `Are you sure you want to reject the task for room ${room}?`)
@@ -168,7 +172,7 @@ $(document).ready(function () {
       populateTable();
       hideLoader();
       removeBlurEffect();
-   }, 5000); // Simulate 5 seconds delay for fetching data
+   }, 1000); // Simulate 5 seconds delay for fetching data
 
    // Attach event listeners to buttons
    attachEventListener('.start-btn', 'click', handleStart);

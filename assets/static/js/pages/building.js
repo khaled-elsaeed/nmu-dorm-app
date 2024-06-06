@@ -158,7 +158,7 @@ $(document).ready(function () {
         populateTable();
        hideLoader();
        removeBlurEffect();
-    }, 5000); // Simulate 5 seconds delay for fetching data
+    }, 1000); // Simulate 5 seconds delay for fetching data
  
     // Attach event listeners to buttons
     attachEventListener('.remove-building-btn', 'click', handleRemoveBuilding);

@@ -169,7 +169,7 @@ $(document).ready(function () {
         populateTable();
         hideLoader();
         removeBlurEffect();
-    }, 3000); // Simulate 5 seconds delay for fetching data
+    }, 1000); // Simulate 5 seconds delay for fetching data
 
     $(document).on('click', '.more-info-btn', residentMoreInfo);
     $('.csv-btn').on('click', downloadResidentsSheet);

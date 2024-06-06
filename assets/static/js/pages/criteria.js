@@ -1,7 +1,11 @@
-const fieldsData = [
+// Utility Functions
+import { downloadExcel, applyBlurEffect, removeBlurEffect, showLoader, hideLoader } from "../helper/utils.js";
+
+let criteriaByField = [
     {
         icon: "bi-person",
         title: "CGPA",
+        id: 1,
         description: "This field represents GPA.",
         lastEdited: "March 18th, 2024, at 3:15 PM",
         criteria: [
@@ -20,6 +24,7 @@ const fieldsData = [
     {
         icon: "bi-geo-alt",
         title: "Governorate",
+        id: 3,
         description: "This field represents governorate information.",
         lastEdited: "March 18th, 2024, at 3:15 PM",
         criteria: [
@@ -33,6 +38,7 @@ const fieldsData = [
     {
         icon: "bi-journal",
         title: "Level of Study",
+        id: 2,
         description: "This field represents the level of study.",
         lastEdited: "March 18th, 2024, at 3:15 PM",
         criteria: [
@@ -45,15 +51,14 @@ const fieldsData = [
     }
 ];
 
-// Function to generate the fields cards
-function generateFields() {
+function generateFieldCard() {
     const fieldsContainer = $("#cards .row");
     fieldsContainer.empty(); // Clear existing content
 
-    fieldsData.forEach((field, index) => {
+    criteriaByField.forEach((field, index) => {
         const fieldCard = `
-            <div class="col-xl-4 col-md-6 col-sm-12">
-                <div class="card border-0 shadow-lg rounded-3" data-bs-toggle="modal" data-bs-target="#criteriaModal" data-index="${index}">
+            <div class="col-xl-4 col-md-6 col-sm-12" data-id="${field.id}" data-index="${index}">
+                <div class="card border-0 shadow-lg rounded-3" data-bs-toggle="modal" data-bs-target="#criteriaModal">
                     <div class="card-content">
                         <div class="card-body text-center">
                             <i class="bi ${field.icon} fs-3 mb-3 text-primary"></i> <!-- Icon above title -->
@@ -73,62 +78,60 @@ function generateFields() {
     });
 }
 
-// Function to show the criteria in the modal
-function showCriteria(fieldIndex) {
+// Function to show the criteria based on the selected field
+function generateCriteriaCard(fieldId) {
     const criteriaContainer = $("#criteriaModal .modal-body .row");
     criteriaContainer.empty(); // Clear existing content
 
-    const criteria = fieldsData[fieldIndex].criteria;
+    const field = criteriaByField.find((field) => field.id == fieldId);
+    console.log(field);
 
-    criteria.forEach(criteriaItem => {
-        const criteriaCard = `
-            <div class="col-md-4">
-                <div class="card card-custom">
-                    <div class="card-body">
-                        <h5 class="card-title card-title-custom">Criteria</h5>
-                        <div class="mb-1">
-                            <p class="card-text mb-1"><span class="text-primary">Description</span></p>
-                            <p class="card-text mb-0 card-text-custom">${criteriaItem.description}</p>
+    if (field) {
+        field.criteria.forEach(criteria => {
+            const criteriaCard = `
+                <div class="col-md-4">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title card-title-custom">Criteria</h5>
+                            <div class="mb-1">
+                                <p class="card-text mb-1"><span class="text-primary">Description</span></p>
+                                <p class="card-text mb-0 card-text-custom">${criteria.description}</p>
+                            </div>
+                            <div class="mb-1">
+                                <p class="card-text mb-1"><span class="text-primary">Weight</span></p>
+                                <p class="card-text mb-0 card-text-custom">${criteria.weight}</p>
+                            </div>
+                            <div class="mb-1">
+                                <p class="card-text mb-1"><span class="text-primary">Time Added</span></p>
+                                <p class="card-text mb-0 card-text-custom">${criteria.timeAdded}</p>
+                            </div>
                         </div>
-                        <div class="mb-1">
-                            <p class="card-text mb-1"><span class="text-primary">Weight</span></p>
-                            <p class="card-text mb-0 card-text-custom">${criteriaItem.weight}</p>
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-danger btn-sm btn-custom delete-criteria" data-criteria-id="${criteria.weight}">Delete</button>
                         </div>
-                        <div class="mb-1">
-                            <p class="card-text mb-1"><span class="text-primary">Time Added</span></p>
-                            <p class="card-text mb-0 card-text-custom">${criteriaItem.timeAdded}</p>
-                        </div>
-                    </div>
-                    <div class="card-footer d-flex justify-content-end">
-                        <button type="button" class="btn btn-danger btn-sm btn-custom delete-criteria" data-field-index="${fieldIndex}" data-criteria-index="${criteria.indexOf(criteriaItem)}">Delete</button>
                     </div>
                 </div>
-            </div>
-        `;
-        criteriaContainer.append(criteriaCard);
-    });
+            `;
+            criteriaContainer.append(criteriaCard);
+        });
+    }
 }
 
-// Function to delete criteria
-function deleteCriteria(fieldIndex, criteriaIndex) {
-    fieldsData[fieldIndex].criteria.splice(criteriaIndex, 1);
-    showCriteria(fieldIndex); // Update the modal content
-}
+// Document Ready Function
+$(document).ready(function () {
+    applyBlurEffect();
+    showLoader();
 
-// Call the function to populate the fields on page load
-$(document).ready(function() {
-    generateFields();
+    // Simulate fetching data after a delay
+    setTimeout(() => {
+        generateFieldCard();
+        hideLoader();
+        removeBlurEffect();
+    }, 1000); // Simulate 3 seconds delay for fetching data
 
-    // Event listener for showing criteria modal
-    $("#cards .card").on("click", function() {
-        const index = $(this).data("index");
-        showCriteria(index);
+    $(document).on('click', '#cards .card', function () {
+        const fieldId = $(this).parent().data("id");
+        generateCriteriaCard(fieldId);
     });
 
-    // Event listener for deleting criteria
-    $("#criteriaModal .modal-body").on("click", ".delete-criteria", function() {
-        const fieldIndex = $(this).data("field-index");
-        const criteriaIndex = $(this).data("criteria-index");
-        deleteCriteria(fieldIndex, criteriaIndex);
-    });
 });

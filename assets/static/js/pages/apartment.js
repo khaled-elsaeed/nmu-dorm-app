@@ -198,7 +198,7 @@ $(document).ready(function () {
       fetchBuildings();
       hideLoader();
       removeBlurEffect();
-   }, 3000); // Simulate 5 seconds delay for fetching data
+   }, 1000); // Simulate 5 seconds delay for fetching data
 
    // Attach event listeners to buttons
    attachEventListener('.remove-apartment-btn', 'click', handleRemoveApartment);
