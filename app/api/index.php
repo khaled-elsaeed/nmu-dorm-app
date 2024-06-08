@@ -32,6 +32,7 @@ function getActionFromHash($hashedAction) {
         hash('sha256', 'maintenance/start') => 'maintenance/start',
         hash('sha256', 'maintenance/reject') => 'maintenance/reject',
         hash('sha256', 'maintenance/complete') => 'maintenance/complete',
+        hash('sha256', 'admin/login') => 'admin/login',
     ];
 
     $decodedHash = decodeHash($hashedAction);
@@ -41,14 +42,14 @@ function getActionFromHash($hashedAction) {
             return $action;
         }
     }
-    return null; // Unknown action
+    return 'errorrr'; // Unknown action
 }
 
 // Check if the 'action' parameter is provided in the query string
 if (!isset($_GET['action'])) {
     http_response_code(400); // Bad request
     echo json_encode(["error" => "No hashed action provided"]);
-    exit;
+    exit; 
 }
 
 $hashedAction = $_GET['action'];
@@ -57,7 +58,8 @@ $hashedAction = $_GET['action'];
 $postData = file_get_contents('php://input');
 
 // Decode the URL encoded data and then decode the base64 data
-$decodedData = base64_decode(urldecode($postData));
+$decodedData = urldecode($postData);
+$decodedData = base64_decode($decodedData);
 
 // Convert the JSON string to PHP array
 $data = json_decode($decodedData, true);
@@ -66,7 +68,7 @@ $data = json_decode($decodedData, true);
 if ($data === null || !is_array($data)) {
     http_response_code(400); // Bad request
     echo json_encode(["error" => "Failed to decode JSON data or decoded data is not an array"]);
-    exit;
+    exit; 
 }
 
 // Get the action from the hashed action
@@ -74,6 +76,7 @@ $action = getActionFromHash($hashedAction);
 
 // Define entity to controller mapping
 $entityToController = [
+    'admin' => 'AdminController',
     'building' => 'BuildingController',
     'apartment' => 'ApartmentController',
     'room' => 'RoomController',
@@ -85,26 +88,23 @@ $entity = extractEntityFromAction($action);
 if (!$entity) {
     http_response_code(400); // Bad request
     echo json_encode(["error" => "Invalid action format"]);
-    exit;
+    exit; 
 }
 
 // Autoload controller class based on the matched entity
 if (isset($entityToController[$entity])) {
     $controllerClass = $entityToController[$entity];
     $controller = new $controllerClass();
-    // Invoke handleAction method of the controller passing the action as parameter
     handleServiceResult($controller->handleAction($action, $data));
-    exit(); // Stop further processing
+    exit; 
 }
 
 // Unknown entity
 http_response_code(400); // Bad request
 echo json_encode(["error" => "Unknown entity"]);
-exit;
+exit; 
 
 function handleServiceResult($result) {
-    // Handle the result from the service
-    // Example: Log the result, format the result, etc.
-    echo json_encode($result);
+    echo json_encode($result); 
 }
 ?>

@@ -1,0 +1,1 @@
+2024-06-08 20:22:41 Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'dorm.admins' doesn't exist | File: C:\xampp\htdocs\project\nmu-dorm-app\app\models\Admin.php | Line: 95

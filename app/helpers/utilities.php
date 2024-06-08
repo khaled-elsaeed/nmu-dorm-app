@@ -29,10 +29,10 @@ function redirect($url) {
     exit();
 }
 
-$error_log_file = '../logs/error.log';
 
 function log_error($message, $db = null) {
-    global $error_log_file;
+    $error_log_file ='../logs/error.log'; 
+
     
     $error_message = date('Y-m-d H:i:s') . ' ' . $message;
 
@@ -51,18 +51,32 @@ function log_error($message, $db = null) {
     }
 
     // Append the error message to the log file
-    file_put_contents($error_log_file, $error_message . "\n", FILE_APPEND);
+    if (!file_exists($error_log_file)) {
+        // Create the log file if it doesn't exist
+        $result = touch($error_log_file);
+        if (!$result) {
+            // Log an error if file creation fails
+            echo("Failed to create error log file: $error_log_file");
+            return;
+        }
+    }
+
+    // Append the error message to the log file
+    file_put_contents($error_log_file, $error_message . PHP_EOL, FILE_APPEND | LOCK_EX);
 }
 
- function errorResponse() {
-    return array("success" => false);
+
+
+
+function errorResponse($error = null) {
+    $response = array("success" => false);
+    if ($error !== null) {
+        $response["error"] = $error;
+    }
+    return $response;
 }
 
-function errorResponseText($error) {
-    return array("success" => false,"error"=>$error);
-}
-
- function logerror($error) {
+ function logError($error) {
     log_error("Error: " . $error);
 }
 

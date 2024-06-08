@@ -208,56 +208,39 @@ function encodeData(data) {
 
 // Database Interaction Functions
 export async function fetchDataDB(action) {
-    try {
+
         const encodedAction = await hashAction(action);
         const rootUrl = getRootUrl();
         const url = `${rootUrl}${encodedAction}`;
-        const data = await getData(url);
-        return data;
-    } catch (error) {
-        console.error("Error in fetching data from db:", error);
-        throw new Error("Failed to fetch data from database");
-    }
+        const response = await getData(url);
+        return response;
+
 }
 
 export async function postDataDB(action, data) {
-    try {
         const encodedAction = await hashAction(action);
         const encodedData = encodeData(data);
         const rootUrl = getRootUrl();
         const url = `${rootUrl}${encodedAction}`;
         const response = await postData(url, encodedData);
         return response;
-    } catch (error) {
-        console.error("Error inserting data:", error);
-        throw new Error("Failed to insert data");
-    }
 }
 
 export async function updateDataDB(action, data) {
-    try {
         const encodedAction = await hashAction(action);
         const encodedData = encodeData(data);
         const rootUrl = getRootUrl();
         const url = `${rootUrl}${encodedAction}`;
         const response = await putData(url, encodedData);
         return response;
-    } catch (error) {
-        console.error("Error updating data:", error);
-        throw new Error("Failed to update data");
-    }
+
 }
 
 export async function deleteDataDB(action, data) {
-    try {
         const encodedAction = await hashAction(action);
         const encodedData = encodeData(data);
         const rootUrl = getRootUrl();
         const url = `${rootUrl}${encodedAction}`;
         const response = await deleteData(url, encodedData);
         return response;
-    } catch (error) {
-        console.error("Error deleting data:", error);
-        throw new Error("Failed to delete data");
-    }
 }
