@@ -3,7 +3,7 @@ export function getRootUrl() {
     const currentUrl = window.location.href;
     const index = currentUrl.indexOf("nmu-dorm-app");
     const rootUrl = currentUrl.substring(0, index + "nmu-dorm-app".length);
-    return `${rootUrl}/src/api/?action=`;
+    return `${rootUrl}/app/api/?action=`;
 }
 
 export function getText(titleText, inputLabel) {

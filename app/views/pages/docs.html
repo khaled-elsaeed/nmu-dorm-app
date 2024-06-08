@@ -3,17 +3,20 @@
    <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Reservation - Admin</title>
-      <script src="../../assets/extensions/lottie/js/lottie.min.js"></script>
+      <title>Documents - Admin</title>
+      <script src="../assets/extensions/lottie/js/lottie.min.js"></script>
 
       <link rel="shortcut icon" href="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2033%2034'%20fill-rule='evenodd'%20stroke-linejoin='round'%20stroke-miterlimit='2'%20xmlns:v='https://vecta.io/nano'%3e%3cpath%20d='M3%2027.472c0%204.409%206.18%205.552%2013.5%205.552%207.281%200%2013.5-1.103%2013.5-5.513s-6.179-5.552-13.5-5.552c-7.281%200-13.5%201.103-13.5%205.513z'%20fill='%23435ebe'%20fill-rule='nonzero'/%3e%3ccircle%20cx='16.5'%20cy='8.8'%20r='8.8'%20fill='%2341bbdd'/%3e%3c/svg%3e" type="image/x-icon">
       <link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAiCAYAAADRcLDBAAAEs2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjMzIgogICBleGlmOlBpeGVsWURpbWVuc2lvbj0iMzQiCiAgIGV4aWY6Q29sb3JTcGFjZT0iMSIKICAgdGlmZjpJbWFnZVdpZHRoPSIzMyIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMzQiCiAgIHRpZmY6UmVzb2x1dGlvblVuaXQ9IjIiCiAgIHRpZmY6WFJlc29sdXRpb249Ijk2LjAiCiAgIHRpZmY6WVJlc29sdXRpb249Ijk2LjAiCiAgIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiCiAgIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIKICAgeG1wOk1vZGlmeURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiCiAgIHhtcDpNZXRhZGF0YURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiPgogICA8eG1wTU06SGlzdG9yeT4KICAgIDxyZGY6U2VxPgogICAgIDxyZGY6bGkKICAgICAgc3RFdnQ6YWN0aW9uPSJwcm9kdWNlZCIKICAgICAgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWZmaW5pdHkgRGVzaWduZXIgMS4xMC4xIgogICAgICBzdEV2dDp3aGVuPSIyMDIyLTAzLTMxVDEwOjUwOjIzKzAyOjAwIi8+CiAgICA8L3JkZjpTZXE+CiAgIDwveG1wTU06SGlzdG9yeT4KICA8L3JkZjpEZXNjcmlwdGlvbj4KIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+Cjw/eHBhY2tldCBlbmQ9InIiPz5V57uAAAABgmlDQ1BzUkdCIElFQzYxOTY2LTIuMQAAKJF1kc8rRFEUxz9maORHo1hYKC9hISNGTWwsRn4VFmOUX5uZZ36oeTOv954kW2WrKLHxa8FfwFZZK0WkZClrYoOe87ypmWTO7dzzud97z+nec8ETzaiaWd4NWtYyIiNhZWZ2TvE946WZSjqoj6mmPjE1HKWkfdxR5sSbgFOr9Ll/rXoxYapQVik8oOqGJTwqPL5i6Q5vCzeo6dii8KlwpyEXFL519LjLLw6nXP5y2IhGBsFTJ6ykijhexGra0ITl5bRqmWU1fx/nJTWJ7PSUxBbxJkwijBBGYYwhBgnRQ7/MIQIE6ZIVJfK7f/MnyUmuKrPOKgZLpEhj0SnqslRPSEyKnpCRYdXp/9++msneoFu9JgwVT7b91ga+LfjetO3PQ9v+PgLvI1xkC/m5A+h7F32zoLXug38dzi4LWnwHzjeg8UGPGbFfySvuSSbh9QRqZ6H+Gqrm3Z7l9zm+h+iafNUV7O5Bu5z3L/wAdthn7QIme0YAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAJTSURBVFiF7Zi9axRBGIefEw2IdxFBRQsLWUTBaywSK4ubdSGVIY1Y6HZql8ZKCGIqwX/AYLmCgVQKfiDn7jZeEQMWfsSAHAiKqPiB5mIgELWYOW5vzc3O7niHhT/YZvY37/swM/vOzJbIqVq9uQ04CYwCI8AhYAlYAB4Dc7HnrOSJWcoJcBS4ARzQ2F4BZ2LPmTeNuykHwEWgkQGAet9QfiMZjUSt3hwD7psGTWgs9pwH1hC1enMYeA7sKwDxBqjGnvNdZzKZjqmCAKh+U1kmEwi3IEBbIsugnY5avTkEtIAtFhBrQCX2nLVehqyRqFoCAAwBh3WGLAhbgCRIYYinwLolwLqKUwwi9pxV4KUlxKKKUwxC6ZElRCPLYAJxGfhSEOCz6m8HEXvOB2CyIMSk6m8HoXQTmMkJcA2YNTHm3congOvATo3tE3A29pxbpnFzQSiQPcB55IFmFNgFfEQeahaAGZMpsIJIAZWAHcDX2HN+2cT6r39GxmvC9aPNwH5gO1BOPFuBVWAZue0vA9+A12EgjPadnhCuH1WAE8ivYAQ4ohKaagV4gvxi5oG7YSA2vApsCOH60WngKrA3R9IsvQUuhIGY00K4flQG7gHH/mLytB4C42EgfrQb0mV7us8AAMeBS8mGNMR4nwHamtBB7B4QRNdaS0M8GxDEog7iyoAguvJ0QYSBuAOcAt71Kfl7wA8DcTvZ2KtOlJEr+ByyQtqqhTyHTIeB+ONeqi3brh+VgIN0fohUgWGggizZFTplu12yW8iy/YLOGWMpDMTPXnl+Az9vj2HERYqPAAAAAElFTkSuQmCC" type="image/png">
-      <link rel="stylesheet" href="../../assets/extensions/@fortawesome/fontawesome-free/css/all.min.css">
-      <link rel="stylesheet" crossorigin href="./../../assets/compiled/css/app.css">
-      <link rel="stylesheet" crossorigin href="./../../assets/compiled/css/app-dark.css">
+      <link rel="stylesheet" href="../assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+      <link rel="stylesheet" href="../assets/extensions/@fortawesome/fontawesome-free/css/all.min.css">
+      <link rel="stylesheet" crossorigin href="./../assets/compiled/css/table-datatable-jquery.css">
+      <link rel="stylesheet" crossorigin href="./../assets/compiled/css/table-datatable.css">
+      <link rel="stylesheet" crossorigin href="./../assets/compiled/css/app.css">
+      <link rel="stylesheet" crossorigin href="./../assets/compiled/css/app-dark.css">
    </head>
    <body>
-      <script src="../../assets/static/js/initTheme.js"></script>
+      <script src="../assets/static/js/initTheme.js"></script>
       <div id="preloader" class="preloader">
       </div>
       <div id="app">
@@ -22,7 +25,7 @@
                <div class="sidebar-header position-relative">
                   <div class="d-flex justify-content-between align-items-center">
                      <div class="logo">
-                        <a href="../../index.html" style="font-size: 20px; color: #7b1013;">NMU DORM</a>
+                        <a href="../index.html" style="font-size: 20px; color: #7b1013;">NMU DORM</a>
                      </div>
                      <div class="theme-toggle d-flex gap-2  align-items-center mt-2">
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
@@ -60,17 +63,17 @@
                <div class="sidebar-menu">
                   <ul class="menu">
                      <li class="sidebar-title">Menu</li>
-                     <li
+                    <li
                         class="sidebar-item  ">
-                        <a href="../../index.html" class='sidebar-link'>
+                        <a href="../index.html" class='sidebar-link'>
                         <i class="bi bi-grid-fill"></i>
                         <span>Dashboard</span>
                         </a>
                      </li>
                      <li
                         class="sidebar-item  ">
-                        <a href="../maintenance.html" class='sidebar-link'>
-                        <i class="fa-fw select-all fas"></i>
+                        <a href="maintenance.html" class='sidebar-link'>
+                           <i class="fa-fw select-all fas"></i>
                            <span>Maintenance</span>
                         </a>
                      </li>
@@ -82,45 +85,44 @@
                         </a>
                         <ul class="submenu ">
                            <li class="submenu-item ">
-                              <a href="../dorm/building.html" class="submenu-link">Building</a>
+                              <a href="dorm/building.html" class="submenu-link">Building</a>
                            </li>
                            <li class="submenu-item ">
-                              <a href="../dorm/apartment.html" class="submenu-link">Apertment</a>
+                              <a href="dorm/apartment.html" class="submenu-link">Apertment</a>
                            </li>
                            <li class="submenu-item  ">
-                              <a href="../dorm/room.html" class="submenu-link">Room</a>
+                              <a href="dorm/room.html" class="submenu-link">Room</a>
                            </li>
                         </ul>
                      </li>
                      <li
                         class="sidebar-item">
-                        <a href="../resident.html" class='sidebar-link'>
-                        <i class="bi bi-person-fill"></i>
-                        <span>Resident</span>
+                        <a href="resident.html" class='sidebar-link'>
+                        <i class="bi bi-person-fill"></i><span>Resident</span>
                         </a>
                      </li>
-                     <li class="sidebar-item  has-sub active">
+                     <li class="sidebar-item  has-sub">
                         <a href="#" class='sidebar-link'>
                         <i class="bi bi-building-fill-up"></i>
                         <span>Reservation</span>
                         </a>
-                        <ul class="submenu">
+                        <ul class="submenu ">
                            <li class="submenu-item  ">
-                              <a href="criteria.html" class="submenu-link">Criteria</a>
+                              <a href="reservation/criteria.html" class="submenu-link">Criteria</a>
                            </li>
-                           <li class="submenu-item  active">
-                              <a href="reservation.html" class="submenu-link">Reservation Process</a>
+                           <li class="submenu-item  ">
+                              <a href="reservation/reservation.html" class="submenu-link">Reservation Process</a>
                            </li>
                         </ul>
                      </li>
-                     <li class="sidebar-item">
-                        <a href="../docs.html" class="sidebar-link">
+                     <li class="sidebar-item active">
+                        <a href="docs.html" class="sidebar-link">
                            <i class="bi bi-card-image"></i>
                                                    <span>Docs</span>
                         </a>
                      </li>
                      <li class="sidebar-item">
-                        <a href="../expelled-student.html" class="sidebar-link">
+                        <a href="expelled-student.html" class="sidebar-link">
                            <i class="bi bi-person-fill-slash"></i> <span>Expelled Student</span>
                         </a>
                      </li>
@@ -179,102 +181,67 @@
                   <div class="row">
                      <div class="col-12 col-md-6 order-md-1 order-last my-3">
                         <div class="d-flex align-items-center">
-                           <h3 class="me-3 mb-0">Reservation</h3>
-                           <!-- Question mark button trigger for guide modal -->
-                           <button type="button" class="btn btn-outline-info mb-0" data-bs-toggle="modal" data-bs-target="#guideModal">
-                           <i class="fas fa-question"></i>
-                           </button>
+                           <h3 class="me-3 mb-0">Docs</h3>
                         </div>
                      </div>
                      <div class="col-12 col-md-6 order-md-2 order-first">
                         <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                            <ol class="breadcrumb">
-                              <li class="breadcrumb-item"><a href="../../index.html">Dashboard</a></li>
-                              <li class="breadcrumb-item active" aria-current="page">Reservation</li>
-                              <li class="breadcrumb-item active" aria-current="page">Reservation Process</li>
+                              <li class="breadcrumb-item"><a href="../index.html">Dashboard</a></li>
+                              <li class="breadcrumb-item active" aria-current="page">Docs</li>
                            </ol>
                         </nav>
                      </div>
                   </div>
                   <div class="row justify-content-end">
-                     <div class="col-12 col-md-2 order-md-2">
-                        <!-- Button trigger for basic modal with margin-bottom -->
-                        <button type="button" class="btn btn-outline-primary block mb-3 float-start float-lg-end" data-bs-toggle="modal" data-bs-target="#default">
-                        Start Process
-                        <i class="bi bi-person-fill-add"></i>
-                        </button>
-                     </div>
-                     <div class="col-12 col-md-4 order-md-2 order-first mb-3 ">
+                     <div class="col-12 col-md-4 order-md-2 order-first mb-3">
                         <!-- Search input and button -->
                         <div class="input-group">
-                           <input type="text" class="form-control" id="searchInput-card" placeholder="Search...">
+                           <input type="text" class="form-control" id="searchInput" placeholder="Search...">
                            <span class="input-group-text"><i class="bi bi-search"></i></span>
                         </div>
                      </div>
                   </div>
                </div>
-               <!-- Guide Modal -->
-               <div class="modal fade text-left" id="guideModal" tabindex="-1" role="dialog" aria-labelledby="guideModalLabel" aria-hidden="true">
-                  <div class="modal-dialog modal-dialog-scrollable" role="document">
+               <!-- Student Details Modal -->
+               <div class="modal fade" id="viewDocsModal" tabindex="-1" aria-labelledby="viewDocsModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-lg">
                      <div class="modal-content">
                         <div class="modal-header">
-                           <h5 class="modal-title" id="guideModalLabel">Admin Guide: Reservation Page</h5>
-                           <button type="button" class="close rounded-pill" data-bs-dismiss="modal" aria-label="Close">
-                           <i data-feather="x"></i>
-                           </button>
+                           <h5 class="modal-title" id="viewDocsModalLabel">Student Details</h5>
+                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                           <div class="row">
-                              <div class="col-12">
-                                 <div class="card">
-                                    <div class="card-body">
-                                       <div class="accordion" id="guideAccordion">
-                                          <!-- Reservation Page Overview -->
-                                          <div class="accordion-item">
-                                             <h2 class="accordion-header" id="headingOne">
-                                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                What is the Reservation Page?
-                                                </button>
-                                             </h2>
-                                             <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#guideAccordion">
-                                                <div class="accordion-body">
-                                                   The Reservation Page allows administrators to start an automated process for room allocation. The system automatically assigns rooms to students based on predefined criteria and student data.
-                                                </div>
-                                             </div>
-                                          </div>
-                                          <!-- Reservation Process -->
-                                          <div class="accordion-item">
-                                             <h2 class="accordion-header" id="headingTwo">
-                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                Automated Reservation Process
-                                                </button>
-                                             </h2>
-                                             <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#guideAccordion">
-                                                <div class="accordion-body">
-                                                   Once the administrator initiates the process, the system automatically evaluates student data against predefined criteria. Based on this evaluation, rooms are automatically allocated to students without manual intervention.
-                                                </div>
-                                             </div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
                         </div>
                         <div class="modal-footer">
-                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                           <i class="bx bx-x d-block d-sm-none"></i>
-                           <span class="d-none d-sm-block">Close</span>
-                           </button>
+                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
                      </div>
                   </div>
                </div>
-               <section id="cards">
-                  <div class="row">
+               <!-- Basic Tables start -->
+               <section class="section">
+                  <div class="card">
+                     <div class="card-body">
+                        <div class="table-responsive">
+                           <table class="table table-hover" id="table1">
+                              <thead>
+                                 <tr>
+                                    <th>Student Name</th>
+                                    <th>Date of Registration</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 
+                              </tbody>
+                           </table>
+                        </div>
+                     </div>
                   </div>
                </section>
-               <!-- Basic Card types section end -->
+               <!-- Basic Tables end -->
             </div>
             <footer>
                <div class="footer clearfix mb-0 text-muted">
@@ -285,11 +252,17 @@
             </footer>
          </div>
       </div>
-      <script src="../../assets/static/js/components/dark.js"></script>
-      <script src="../../assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-      <script src="../../assets/extensions/jquery/jquery.min.js"></script>
-      <script src="../../assets/static/js/helper/searchCard.js"></script>
-      <script src="../../assets/compiled/js/app.js"></script>
-      <script type="module" src="../../assets/static/js/pages/reservation.js"> </script>
+      <!-- Load jQuery first -->
+      <script src="../assets/extensions/jquery/jquery.min.js"></script>
+      <!-- Load other scripts that depend on jQuery -->
+      <script src="../assets/static/js/components/dark.js"></script>
+      <script src="../assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+      <!-- Load Bootstrap JavaScript files -->
+      <script src="../assets/extensions/datatables.net/js/jquery.dataTables.min.js"></script>
+      <script src="../assets/extensions/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+      <!-- Load your custom application scripts -->
+      <script src="../assets/compiled/js/app.js"></script>
+      <script src="../assets/static/js/pages/datatables.js"></script>
+      <script type="module" src="../assets/static/js/pages/docs.js"></script>
    </body>
 </html>

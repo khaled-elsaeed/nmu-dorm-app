@@ -6,7 +6,7 @@ let residentDocs = [];
 
 // Function to simulate fetching data
 function fetchresidentDocs() {
-    return [
+    residentDocs = [
         {
             id: "resident1",
             name: "John Doe",
@@ -16,24 +16,16 @@ function fetchresidentDocs() {
             invoice: "../assets/compiled/jpg/invoice.jpg",
             email: "john.doe@example.com",
             gpa: 3.8
-        },{
-            id: "resident1",
-            name: "John Doe",
-            registrationDate: "2024-05-18",
-            status: "Pending",
+        },
+        {
+            id: "resident2",
+            name: "Jane Doe",
+            registrationDate: "2024-05-19",
+            status: "Approved",
             profilePicture: "../assets/compiled/jpg/istockphoto-597958694-612x612.jpg",
             invoice: "../assets/compiled/jpg/invoice.jpg",
-            email: "john.doe@example.com",
-            gpa: 3.8
-        },{
-            id: "resident1",
-            name: "John Doe",
-            registrationDate: "2024-05-18",
-            status: "Pending",
-            profilePicture: "../assets/compiled/jpg/istockphoto-597958694-612x612.jpg",
-            invoice: "../assets/compiled/jpg/invoice.jpg",
-            email: "john.doe@example.com",
-            gpa: 3.8
+            email: "jane.doe@example.com",
+            gpa: 3.9
         },
         // Add more residents as necessary
     ];
@@ -47,16 +39,13 @@ function constructTableRow(resident) {
             <td>${resident.registrationDate}</td>
             <td>${resident.status}</td>
             <td>
-                <button type="button" class="btn btn-outline-primary btn-sm m-2" data-id="${resident.id}" title="Show Docs"><i class="fas fa-play"></i> View</button>
-                <button type="button" class="btn btn-outline-success btn-sm accept-btn m-2" data-id="${resident.id}" title="Accept"><i class="fas fa-check"></i> Accept</button>
-                <button type="button" class="btn btn-outline-danger btn-sm reject-btn m-2" data-id="${resident.id}" title="Reject"><i class="fas fa-times"></i> Reject</button>
+                <button type="button" class="btn btn-outline-primary btn-sm view-docs m-1" data-id="${resident.id}" title="Show Docs"><i class="fas fa-play"></i> View</button>
+                <button type="button" class="btn btn-outline-success btn-sm accept-docs-btn m-1" data-id="${resident.id}" title="Accept"><i class="fas fa-check"></i> Accept</button>
+                <button type="button" class="btn btn-outline-danger btn-sm reject-docs-btn m-1" data-id="${resident.id}" title="Reject"><i class="fas fa-times"></i> Reject</button>
             </td>
         </tr>
     `;
 }
-
-
-
 
 function populateTable() {
     const table = $("#table1").DataTable();
@@ -68,7 +57,6 @@ function populateTable() {
 
 // Function to update the modal content
 function updateModalContent(residentId) {
-    console.log("heree");
     const resident = residentDocs.find(s => s.id === residentId);
     if (resident) {
         const modalContent = `
@@ -83,7 +71,7 @@ function updateModalContent(residentId) {
                 </div>
             </div>
             <div class="mt-3">
-                <h6>resident Information</h6>
+                <h6>Resident Information</h6>
                 <p><strong>Name:</strong> ${resident.name}</p>
                 <p><strong>Email:</strong> ${resident.email}</p>
                 <p><strong>GPA:</strong> ${resident.gpa}</p>
@@ -93,7 +81,6 @@ function updateModalContent(residentId) {
     }
 }
 
-
 // Document Ready Function
 $(document).ready(function () {
     applyBlurEffect();
@@ -101,15 +88,17 @@ $(document).ready(function () {
 
     // Simulate fetching data after a delay
     setTimeout(() => {
-        residentDocs = fetchresidentDocs(); // Fetch resident data
+        fetchresidentDocs(); // Fetch resident data
         populateTable(); // Populate the table with the fetched data
         hideLoader();
         removeBlurEffect();
     }, 1000); // Simulate 3 seconds delay for fetching data
 
-    $('#detailsModal').on('show.bs.modal', function (event) {
-        const button = $(event.relatedTarget); // Button that triggered the modal
+    // Event delegation for view-docs buttons
+    $(document).on('click', '.view-docs', function (event) {
+        const button = $(this); // Button that triggered the modal
         const residentId = button.data('id'); // Extract info from data-* attributes
         updateModalContent(residentId); // Update the modal content
+        $('#viewDocsModal').modal('show');
     });
 });
