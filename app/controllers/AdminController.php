@@ -14,13 +14,28 @@ class AdminController {
         switch ($action) {
             case 'admin/login':
                 return $this->loginAdmin($data);
+            case 'admin/register':
+                return $this->registerAdmin($data);
             default:
                 // Unknown action
                 return errorResponse('Invalid Action');
         }
     }
 
-    
+    public function registerAdmin($data) {
+        if (empty($data['firstName']) || empty($data['middleName']) || empty($data['lastName'])  || empty($data['email']) || empty($data['password']) || empty($data['role']) ) {
+
+            return errorResponse("All information are Required !");
+        }
+         else {
+            $result = $this->adminModel->register($data['firstName'],$data['middleName'],$data['lastName'],$data['email'], $data['password'],$data['role']);
+            if ($result['success'] === true) {
+                return successResponse();
+            } else {
+                return errorResponse($result['error']);
+            }
+        }
+    }
 
     public function loginAdmin($data) {
         if (empty($data['email']) || empty($data['password'])) {

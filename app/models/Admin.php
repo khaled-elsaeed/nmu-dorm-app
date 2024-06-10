@@ -17,11 +17,8 @@ class AdminModel {
         }
     }
 
-    public function register($username, $email, $password) {
+    public function register($firstName,$middleName,$lastName,$email, $password,$role) {
         try {
-            // if ($this->isUsernameTaken($username)) {
-            //     return errorResponse("Username already taken");
-            // }
 
             if ($this->isEmailRegistered($email)) {
                 return errorResponse("Email already registered");
@@ -29,14 +26,22 @@ class AdminModel {
 
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-            $sql = "INSERT INTO users (firstName,lastName, email, password) VALUES (?, ?, ?)";
+            $sql = "INSERT INTO users (firstName, middleName, lastName, userName, email, password, role) 
+            VALUES (:firstName, :middleName, :lastName, :userName, :email, :password, :role)
+            ";
             $stmt = $this->db->prepare($sql);
-            $stmt->bind_param("sss", $username, $email, $hashedPassword);
-
+            $stmt->bindParam(':firstName', $firstName, PDO::PARAM_STR);
+            $stmt->bindParam(':middleName', $middleName, PDO::PARAM_STR);
+            $stmt->bindParam(':lastName', $lastName, PDO::PARAM_STR);
+            $userName = $firstName . ' ' . $lastName;
+            $stmt->bindParam(':userName', $userName, PDO::PARAM_STR);
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR);
+            $stmt->bindParam(':role', $role, PDO::PARAM_STR);
             if ($stmt->execute()) {
-                return true; 
+                return successResponse(); 
             } else {
-                return errorResponse("Registration failed: " . $stmt->error);
+                return errorResponse("Registration failed, Please try again later. ");
             }
         } catch (PDOException $e) {
             logError($e->getMessage());
@@ -60,17 +65,19 @@ class AdminModel {
 
     private function isEmailRegistered($email) {
         try {
-            $sql = "SELECT * FROM admins WHERE email = :email";
+            $sql = "SELECT * FROM users WHERE email = :email";
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->execute();
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $result->num_rows > 0;
+            // Check if any row is returned
+            return $result !== false;
         } catch (PDOException $e) {
             logError($e->getMessage());
             return true;
         }
     }
+    
 
     public function login($email, $password) {
         try {

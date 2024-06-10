@@ -13,12 +13,8 @@ function decodeHash($hash) {
 // Function to extract entity from the action string
 function extractEntityFromAction($actionString) {
     $parts = explode('/', $actionString);
-    if (count($parts) === 2) {
-        return $parts[0];
-    }
-    return null;
+    return count($parts) === 2 ? $parts[0] : null;
 }
-
 
 // Function to get the action based on the hashed value
 function getActionFromHash($hashedAction) {
@@ -33,48 +29,56 @@ function getActionFromHash($hashedAction) {
         hash('sha256', 'maintenance/reject') => 'maintenance/reject',
         hash('sha256', 'maintenance/complete') => 'maintenance/complete',
         hash('sha256', 'admin/login') => 'admin/login',
+        hash('sha256', 'admin/register') => 'admin/register',
     ];
 
     $decodedHash = decodeHash($hashedAction);
-
-    foreach ($actions as $hash => $action) {
-        if ($hash === $decodedHash) {
-            return $action;
-        }
-    }
-    return 'errorrr'; // Unknown action
+    return $actions[$decodedHash] ?? 'Unknown action';
 }
 
-// Check if the 'action' parameter is provided in the query string
+// Function to handle service result and return JSON response
+function handleServiceResult($result) {
+    // Ensure the result is an array or an object
+    if (!is_array($result) && !is_object($result)) {
+        // If not, create an array with the result and encode it
+        $result = array('result' => $result);
+    }
+
+    // Set the Content-Type header to indicate JSON
+    header('Content-Type: application/json');
+
+    // Encode the result as JSON and return it
+    echo json_encode($result);
+}
+
+
+// Main script
 if (!isset($_GET['action'])) {
-    http_response_code(400); // Bad request
-    echo json_encode(["error" => "No hashed action provided"]);
+    http_response_code(400);
+    handleServiceResult(["error" => "No hashed action provided"]);
     exit; 
 }
 
 $hashedAction = $_GET['action'];
-
-// Receive the raw POST data
 $postData = file_get_contents('php://input');
-
-// Decode the URL encoded data and then decode the base64 data
-$decodedData = urldecode($postData);
-$decodedData = base64_decode($decodedData);
-
-// Convert the JSON string to PHP array
+$decodedData = base64_decode(urldecode($postData));
 $data = json_decode($decodedData, true);
 
-// Check if the data was successfully decoded
 if ($data === null || !is_array($data)) {
-    http_response_code(400); // Bad request
-    echo json_encode(["error" => "Failed to decode JSON data or decoded data is not an array"]);
+    http_response_code(400);
+    handleServiceResult(["error" => "Failed to decode JSON data or decoded data is not an array"]);
     exit; 
 }
 
-// Get the action from the hashed action
 $action = getActionFromHash($hashedAction);
+$entity = extractEntityFromAction($action);
 
-// Define entity to controller mapping
+if (!$entity) {
+    http_response_code(400);
+    handleServiceResult(["error" => "Invalid action format"]);
+    exit; 
+}
+
 $entityToController = [
     'admin' => 'AdminController',
     'building' => 'BuildingController',
@@ -83,15 +87,6 @@ $entityToController = [
     'maintenance' => 'MaintenanceController',
 ];
 
-// Extract entity from the action
-$entity = extractEntityFromAction($action);
-if (!$entity) {
-    http_response_code(400); // Bad request
-    echo json_encode(["error" => "Invalid action format"]);
-    exit; 
-}
-
-// Autoload controller class based on the matched entity
 if (isset($entityToController[$entity])) {
     $controllerClass = $entityToController[$entity];
     $controller = new $controllerClass();
@@ -99,12 +94,8 @@ if (isset($entityToController[$entity])) {
     exit; 
 }
 
-// Unknown entity
-http_response_code(400); // Bad request
-echo json_encode(["error" => "Unknown entity"]);
+http_response_code(400);
+handleServiceResult(["error" => "Unknown entity"]);
 exit; 
 
-function handleServiceResult($result) {
-    echo json_encode($result); 
-}
 ?>

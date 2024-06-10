@@ -178,6 +178,7 @@ function postData(url, data) {
     });
 }
 
+
 function putData(url, data) {
     return new Promise((resolve, reject) => {
         ajaxRequest('PUT', url, data, resolve, reject);
