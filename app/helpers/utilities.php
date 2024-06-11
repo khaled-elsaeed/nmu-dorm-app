@@ -31,7 +31,7 @@ function redirect($url) {
 
 
 function log_error($message, $db = null) {
-    $error_log_file ='../logs/error.log'; 
+    $error_log_file ='../storage/logs/error.log'; 
 
     
     $error_message = date('Y-m-d H:i:s') . ' ' . $message;

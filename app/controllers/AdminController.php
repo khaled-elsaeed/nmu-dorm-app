@@ -16,6 +16,8 @@ class AdminController {
                 return $this->loginAdmin($data);
             case 'admin/register':
                 return $this->registerAdmin($data);
+            case 'admin/logout':
+                return $this->logoutAdmin();
             default:
                 // Unknown action
                 return errorResponse('Invalid Action');
@@ -50,6 +52,16 @@ class AdminController {
                 return errorResponse($result['error']);
             }
         }
+    }
+
+
+    public function logoutAdmin (){
+        $result = $this->adminModel->logout();
+        if ($result['success'] === true) {
+            return successResponse();
+        } else {
+            return errorResponse($result['error']);
+        }    
     }
 
 }

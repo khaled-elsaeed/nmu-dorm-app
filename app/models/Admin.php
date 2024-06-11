@@ -1,5 +1,4 @@
 <?php
-// AdminModel.php
 
 require_once '../models/Database.php';
 require_once '../helpers/utilities.php';
@@ -49,19 +48,6 @@ class AdminModel {
         }
     }
 
-    // private function isUsernameTaken($username) {
-    //     try {
-    //         $sql = "SELECT * FROM admins WHERE username = ?";
-    //         $stmt = $this->db->prepare($sql);
-    //         $stmt->bind_param("s", $username);
-    //         $stmt->execute();
-    //         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    //         return $result->num_rows > 0;
-    //     } catch (PDOException $e) {
-    //         logError($e->getMessage());
-    //         return true;
-    //     }
-    // }
 
     private function isEmailRegistered($email) {
         try {
@@ -100,6 +86,19 @@ class AdminModel {
             logError($e->getMessage());
             return errorResponse("Database error. Please try again later.");
         }
+    }
+
+    public function logout (){
+        try{
+            session_start();
+            session_unset();
+            session_destroy();
+            return successResponse();
+        } catch (PDOException $e){
+            logError($e->getMessage());
+            return errorResponse("Database error. Please try again later.");
+        }
+        
     }
     
     

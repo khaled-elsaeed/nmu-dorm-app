@@ -1,3 +1,6 @@
+import {  handleFailure,postDataDB } from "../helper/utils.js";
+
+
 var optionsProfileVisit = {
   annotations: {
     position: "back",
@@ -95,6 +98,7 @@ var chartProfileVisit = new ApexCharts(
   document.querySelector("#chart-profile-visit"),
   optionsProfileVisit
 )
+
 var chartVisitorsProfile = new ApexCharts(
   document.getElementById("chart-attendance"),
   optionsVisitorsProfile
@@ -102,3 +106,15 @@ var chartVisitorsProfile = new ApexCharts(
 
 chartProfileVisit.render()
 chartVisitorsProfile.render()
+
+function logout(){
+  postDataDB("admin/logout",{})
+       .then(() => { 
+        window.location.href = 'auth/login.html';
+       })
+       .catch(error => {
+           handleFailure(error);
+       });
+}
+
+document.getElementById('logout-lnk').addEventListener('click',logout)

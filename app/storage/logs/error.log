@@ -1,0 +1,2 @@
+2024-06-12 01:24:40 Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'dorm.descriptiontable' doesn't exist | File: C:\xampp\htdocs\project\nmu-dorm-app\app\models\Maintenance.php | Line: 28
+2024-06-12 01:25:25 Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'd.description' in 'field list' | File: C:\xampp\htdocs\project\nmu-dorm-app\app\models\Maintenance.php | Line: 28

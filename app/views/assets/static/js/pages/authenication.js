@@ -17,8 +17,8 @@ document.getElementById('login-form').addEventListener('submit', function(event)
 
    postDataDB("admin/login", { email: email, password: password })
     
-       .then(response => { 
-        window.location.href = '../home.html'; // Redirect to dashboard page
+       .then(() => { 
+        window.location.href = '../home.html';
        })
        .catch(error => {
            handleFailure(error);

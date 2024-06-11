@@ -208,7 +208,7 @@ function encodeData(data) {
 }
 
 // Database Interaction Functions
-export async function fetchDataDB(action) {
+export async function getDataDB(action) {
 
         const encodedAction = await hashAction(action);
         const rootUrl = getRootUrl();

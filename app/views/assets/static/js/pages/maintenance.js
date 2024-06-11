@@ -1,5 +1,5 @@
 // Utility Functions
-import { confirmAction,getText,updateDataDB, handleFailure, handleSuccess, applyBlurEffect, removeBlurEffect, showLoader, hideLoader } from "../helper/utils.js";
+import { confirmAction,getText,updateDataDB,getDataDB, handleFailure, handleSuccess, applyBlurEffect, removeBlurEffect, showLoader, hideLoader } from "../helper/utils.js";
 
 function attachEventListener(buttonSelector, eventType, handler) {
    $(document).on(eventType, buttonSelector, function () {
@@ -13,29 +13,37 @@ function attachEventListener(buttonSelector, eventType, handler) {
 let maintenanceRequests = [];
 
 function fetchMaintenanceRequests() {
-   maintenanceRequests = [
-      { maintenanceId: 1, name: 'Khaled Tahran', location: 'B1A12R5', date: '2024-05-01', equipment: 'Generator', description: 'Oil change and filter replacement', technician: 'John Doe', status: 'complete' },
-      { maintenanceId: 2, name: 'Ahmed Ali', location: 'B2A13R6', date: '2024-05-03', equipment: 'HVAC System', description: 'Routine maintenance', technician: null, status: 'pending' },
-      { maintenanceId: 3, name: 'Fatima Ibrahim', location: 'B3A14R7', date: '2024-05-05', equipment: 'Fire Alarm', description: 'Emergency repair', technician: null, status: 'inProgress' },
-      { maintenanceId: 4, name: 'Youssef Mansour', location: 'B4A15R8', date: '2024-05-07', equipment: 'Electrical Panel', description: 'System upgrade', technician: null, status: 'pending' },
-      { maintenanceId: 5, name: 'Layla Mohamed', location: 'B5A16R9', date: '2024-05-09', equipment: 'Plumbing System', description: 'Component replacement', technician: null, status: 'inProgress' },
-      { maintenanceId: 6, name: 'Omar Hassan', location: 'B6A17R10', date: '2024-05-11', equipment: 'Generator', description: 'Routine maintenance', technician: 'Ali Ahmed', status: 'complete' },
-      { maintenanceId: 7, name: 'Hana Samir', location: 'B7A18R11', date: '2024-05-13', equipment: 'HVAC System', description: 'Emergency repair', technician: null, status: 'pending' },
-      { maintenanceId: 8, name: 'Mahmoud Sameh', location: 'B8A19R12', date: '2024-05-15', equipment: 'Fire Alarm', description: 'System upgrade', technician: 'Karim Mahmoud', status: 'inProgress' },
-      { maintenanceId: 9, name: 'Nour Adel', location: 'B9A20R13', date: '2024-05-17', equipment: 'Electrical Panel', description: 'Routine maintenance', technician: null, status: 'complete' },
-      { maintenanceId: 10, name: 'Sara Amr', location: 'B10A21R14', date: '2024-05-19', equipment: 'Plumbing System', description: 'Component replacement', technician: null, status: 'pending' },
-      { maintenanceId: 11, name: 'Aliyah Kamal', location: 'B11A22R15', date: '2024-05-21', equipment: 'Generator', description: 'Emergency repair', technician: null, status: 'inProgress' }
-   ];
+   getDataDB("maintenance/getMaintenance")
+   .then(data => {
+      console.log(data); // Log the data to inspect its structure
+      maintenanceRequests = data.map(request => ({
+         maintenanceId: request.id,
+         name: request.technician,
+         location: request.residentId,
+         date: request.requestDate,
+         equipment: request.equipment,
+         description: request.description, 
+         technician: request.technician, 
+         status: request.status
+      }));
+      populateTable();
+   })
+
 }
 
-// Populate the Table with Maintenance Requests
+
+
+
 function populateTable() {
    const table = $("#table1").DataTable();
+   table.clear().draw(); // Clear existing data from the table
+   
    maintenanceRequests.forEach(request => {
       const row = constructTableRow(request);
       table.row.add($(row)).draw();
    });
 }
+
 
 // Construct a Table Row for Each Request
 function constructTableRow(request) {
@@ -92,11 +100,11 @@ function handleStart(maintenanceId, room) {
       confirmAction("Confirm Start", `Are you sure you want to start the task for room ${room}?`)
          .then(() => {
             getText("Enter the name of the person who will take the task", "Name")
-               .then(name => {
-                  updateDataDB("maintenance/start", { maintenanceId })
+               .then(technician => {
+                  updateDataDB("maintenance/start", { maintenanceId : maintenanceId ,technician : technician })
                      .then(() => {
-                         handleSuccess(`Task for room ${room} has been initiated successfully for ${name}.`);
-                         populateTable();
+                         handleSuccess(`Task for room ${room} has been initiated successfully for ${technician}.`);
+                         fetchMaintenanceRequests();
                      })
                      .catch(() => handleFailure(`Failed to start the task for room ${room}. Please try again later.`));
                })
@@ -114,7 +122,10 @@ function handleReject(maintenanceId, room) {
          getText("Enter the reason for rejecting the task", "Description")
             .then(description => {
                updateDataDB("maintenance/reject", { maintenanceId })
-                  .then(() => handleSuccess(`Task for room ${room} has been rejected successfully with reason: ${description}.`))
+                  .then(() => {
+                      handleSuccess(`Task for room ${room} has been rejected successfully with reason: ${description}.`)
+                      fetchMaintenanceRequests();
+                     })
                   .catch(() => handleFailure(`Failed to reject the task for room ${room}. Please try again later.`));
             })
             .catch(() => console.log('Input canceled'));
@@ -126,7 +137,10 @@ function handleComplete(maintenanceId, room) {
    confirmAction("Confirm Complete", `Are you sure you want to complete the task for room ${room}?`)
       .then(() => {
          updateDataDB("maintenance/complete", { maintenanceId })
-            .then(() => handleSuccess(`Task for room ${room} has been completed successfully.`))
+            .then(() => { 
+               handleSuccess(`Task for room ${room} has been completed successfully.`)
+               fetchMaintenanceRequests();
+            })
             .catch(() => handleFailure(`Failed to complete the task for room ${room}. Please try again later.`));
       })
       .catch(() => console.log('Complete action canceled'));
@@ -169,10 +183,9 @@ $(document).ready(function () {
    // Simulate fetching data after a delay
    setTimeout(() => {
       fetchMaintenanceRequests();
-      populateTable();
       hideLoader();
       removeBlurEffect();
-   }, 1000); // Simulate 5 seconds delay for fetching data
+   });
 
    // Attach event listeners to buttons
    attachEventListener('.start-btn', 'click', handleStart);

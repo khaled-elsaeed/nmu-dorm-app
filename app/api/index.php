@@ -1,5 +1,5 @@
 <?php
-
+require_once('../helpers/utilities.php');
 // Autoload models
 spl_autoload_register(function ($class) {
     require_once  '../controllers/' . $class . '.php';
@@ -25,11 +25,15 @@ function getActionFromHash($hashedAction) {
         hash('sha256', 'apartment/delete') => 'apartment/delete',
         hash('sha256', 'room/create') => 'room/create',
         hash('sha256', 'room/delete') => 'room/delete',
+        hash('sha256', 'maintenance/getMaintenance') => 'maintenance/getMaintenance',
+
         hash('sha256', 'maintenance/start') => 'maintenance/start',
         hash('sha256', 'maintenance/reject') => 'maintenance/reject',
         hash('sha256', 'maintenance/complete') => 'maintenance/complete',
         hash('sha256', 'admin/login') => 'admin/login',
         hash('sha256', 'admin/register') => 'admin/register',
+        hash('sha256', 'admin/logout') => 'admin/logout',
+
     ];
 
     $decodedHash = decodeHash($hashedAction);
@@ -55,7 +59,7 @@ function handleServiceResult($result) {
 // Main script
 if (!isset($_GET['action'])) {
     http_response_code(400);
-    handleServiceResult(["error" => "No hashed action provided"]);
+    handleServiceResult(errorResponse("No hashed action provided"));
     exit; 
 }
 
@@ -64,18 +68,20 @@ $postData = file_get_contents('php://input');
 $decodedData = base64_decode(urldecode($postData));
 $data = json_decode($decodedData, true);
 
-if ($data === null || !is_array($data)) {
-    http_response_code(400);
-    handleServiceResult(["error" => "Failed to decode JSON data or decoded data is not an array"]);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($data === null || !is_array($data))) {
+    // http_response_code(400);
+    handleServiceResult(errorResponse("Failed to process the request. Please ensure the provided data is valid and in the correct format."));
     exit; 
 }
+
+
 
 $action = getActionFromHash($hashedAction);
 $entity = extractEntityFromAction($action);
 
 if (!$entity) {
     http_response_code(400);
-    handleServiceResult(["error" => "Invalid action format"]);
+    handleServiceResult(errorResponse("Invalid action format"));
     exit; 
 }
 
@@ -95,7 +101,7 @@ if (isset($entityToController[$entity])) {
 }
 
 http_response_code(400);
-handleServiceResult(["error" => "Unknown entity"]);
+handleServiceResult(errorResponse("Unknown entity"));
 exit; 
 
 ?>
