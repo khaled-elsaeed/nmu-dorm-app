@@ -1,5 +1,5 @@
 // Utility Functions
-import { confirmAction, handleFailure, handleSuccess, applyBlurEffect, removeBlurEffect, showLoader, hideLoader, postDataDB, deleteDataDB } from "../helper/utils.js";
+import { confirmAction, handleFailure, handleSuccess, applyBlurEffect, removeBlurEffect, showLoader, hideLoader, postDataDB,getDataDB, deleteDataDB } from "../helper/utils.js";
 
 function attachEventListener(buttonSelector, eventType, handler) {
     $(document).on(eventType, buttonSelector, function () {
@@ -13,28 +13,17 @@ let buildings = [];
 
 function fetchBuildings() {
 
-    buildings = [{
-            id: 2,
-            number: 1,
-            category: 'Male',
-            apartment: '25',
-            occupancy: 'fullyOccupied'
-        },
-        {
-            id: 3,
-            number: 2,
-            category: 'Female',
-            apartment: '13',
-            occupancy: 'vacant'
-        },
-        {
-            id: 1,
-            number: 3,
-            category: 'Stuff',
-            apartment: '15',
-            occupancy: 'partiallyOccupied'
-        },
-    ];
+    getDataDB("dorm/getBuildings")
+   .then(data => {
+      buildings = data.map(building => ({
+         buildingId: building.id,
+         number: building.number,
+         category: building.category,
+         maxApartmentCapacity: building.maxApartmentCapacity,
+         apartmentsCount : building.apartmentsCount
+      }));
+      populateTable();
+   })
 }
 
 function populateTable() {
@@ -46,12 +35,12 @@ function populateTable() {
 }
 
 function constructTableRow(building) {
-    const occupancyBadge = generateOccupancyBadge(building.occupancy);
+    const occupancyBadge = generateOccupancyBadge(building.apartmentsCount,buildings.maxApartmentCapacity);
     return `
         <tr>
             <td>${building.number}</td>
             <td>${building.category}</td>
-            <td>${building.apartment}</td>
+            <td>${building.apartmentsCount} / ${building.maxApartmentCapacity}</td>
             <td>${occupancyBadge}</td>
             <td>
                 <button type="button" class="btn btn-outline-danger btn-sm action-button remove-building-btn" data-id="${building.id}" data-number="${building.number}" title="Remove"><i class="fas fa-trash"></i> Delete</button>
@@ -61,13 +50,14 @@ function constructTableRow(building) {
 }
 
 
-function generateOccupancyBadge(occupancyStatus) {
-    const badgeMap = {
-        'vacant': '<span class="badge bg-success">Vacant</span>',
-        'fullyOccupied': '<span class="badge bg-danger">Fully Occupied</span>',
-        'partiallyOccupied': '<span class="badge bg-warning">Partially Occupied</span>',
-    };
-    return badgeMap[occupancyStatus] || `<span class="badge">${occupancyStatus}</span>`;
+function generateOccupancyBadge(apartmentsCount, maxApartmentCapacity) {
+    if (apartmentsCount === 0) {
+        return '<span class="badge bg-success">Vacant</span>';
+    } else if (apartmentsCount === maxApartmentCapacity) {
+        return '<span class="badge bg-danger">Fully Occupied</span>';
+    } else {
+        return '<span class="badge bg-warning">Partially Occupied</span>';
+    }
 }
 
 
@@ -155,7 +145,6 @@ $(document).ready(function () {
     // Simulate fetching data after a delay
     setTimeout(() => {
         fetchBuildings();
-        populateTable();
        hideLoader();
        removeBlurEffect();
     }, 1000); // Simulate 5 seconds delay for fetching data

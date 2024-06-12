@@ -17,9 +17,12 @@ class MaintenanceModel {
 
     public function fetchMaintenance() {
         try {
-            $sql = "SELECT m.id, m.residentId, m.equipment, d.description, m.requestDate, m.technician, m.completeDate, m.status 
+            $sql = "SELECT m.id, m.residentId, u.username AS residentName, m.equipment, d.description, m.requestDate, m.technician, m.completeDate, m.status 
                     FROM maintenance m
-                    INNER JOIN descriptions d ON m.descriptionId = d.id";
+                    LEFT JOIN descriptions d ON m.descriptionId = d.id
+                    LEFT JOIN residents r ON m.residentId = r.id
+                    LEFT JOIN members ON members.Id = r.MemberId
+                    LEFT JOIN users u ON members.UserId = u.id"; // Joining with users table to get member name
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
             $maintenanceData = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -29,6 +32,8 @@ class MaintenanceModel {
             return errorResponse("An error occurred while fetching maintenance data. Please try again later.");
         }
     }
+    
+    
     
 
     public function startMaintenance($maintenanceId, $technician) {
@@ -61,7 +66,6 @@ class MaintenanceModel {
 
     public function completeMaintenance($maintenanceId) {
         try {
-            // Get the current date and time in the MySQL datetime format
             $currentDateTime = date('Y-m-d H:i:s');
     
             $sql = "UPDATE maintenance SET status = 'complete', completeDate = :completeDateTime WHERE id = :id";

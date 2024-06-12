@@ -18,9 +18,10 @@ function fetchMaintenanceRequests() {
       console.log(data); // Log the data to inspect its structure
       maintenanceRequests = data.map(request => ({
          maintenanceId: request.id,
-         name: request.technician,
+         name: request.residentName,
          location: request.residentId,
-         date: request.requestDate,
+         requestDate: request.requestDate,
+         completeDate : request.completeDate,
          equipment: request.equipment,
          description: request.description, 
          technician: request.technician, 
@@ -48,13 +49,13 @@ function populateTable() {
 // Construct a Table Row for Each Request
 function constructTableRow(request) {
    const statusBadge = generateStatusBadge(request.status);
-   const actionContent = generateActionContent(request.status, request.maintenanceId, request.location);
+   const actionContent = generateActionContent(request);
    const technicianName = request.technician ? request.technician : 'No one';
    return `
       <tr>
          <td>${request.name}</td>
          <td>${request.location}</td>
-         <td>${request.date}</td>
+         <td>${request.requestDate}</td>
          <td>${request.equipment}</td>
          <td>${request.description}</td>
          <td>${technicianName}</td>
@@ -73,23 +74,24 @@ function generateStatusBadge(status) {
    return badgeMap[status] || `<span class="badge">${status}</span>`;
 }
 
-// Generate Action Buttons Based on Status
-function generateActionContent(status, maintenanceId, room) {
+function generateActionContent(request) {
+   const { status, maintenanceId, location, completeDate } = request; // Destructure the request object
+
    switch (status) {
       case 'complete':
-         return `<button type="button" class="btn btn-outline-success btn-sm action-button" title="Complete" disabled><i class="fas fa-check"></i> Complete</button>`;
-      case 'pending':
+         return `<button type="button" class="btn btn-outline-success btn-sm action-button" title="Complete" disabled>${completeDate ? completeDate : 'Complete'}</button>`;
+         case 'pending':
          return `
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-outline-primary btn-sm action-button start-btn" data-id="${maintenanceId}" data-room="${room}" title="Start"><i class="fas fa-play"></i> Start</button>
-                <button type="button" class="btn btn-outline-success btn-sm action-button complete-btn" data-id="${maintenanceId}" data-room="${room}" title="Complete"><i class="fas fa-check"></i> Complete</button>
-                <button type="button" class="btn btn-outline-danger btn-sm action-button reject-btn" data-id="${maintenanceId}" data-room="${room}" title="Reject"><i class="fas fa-times"></i> Reject</button>
+                <button type="button" class="btn btn-outline-primary btn-sm action-button start-btn" data-id="${maintenanceId}" data-room="${location}" title="Start"><i class="fas fa-play"></i> Start</button>
+                <button type="button" class="btn btn-outline-success btn-sm action-button complete-btn" data-id="${maintenanceId}" data-room="${location}" title="Complete"><i class="fas fa-check"></i> Complete</button>
+                <button type="button" class="btn btn-outline-danger btn-sm action-button reject-btn" data-id="${maintenanceId}" data-room="${location}" title="Reject"><i class="fas fa-times"></i> Reject</button>
             </div>`;
       case 'inProgress':
          return `
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-outline-success btn-sm action-button complete-btn" data-id="${maintenanceId}" data-room="${room}" title="Complete"><i class="fas fa-check"></i> Complete</button>
-                <button type="button" class="btn btn-outline-danger btn-sm action-button reject-btn" data-id="${maintenanceId}" data-room="${room}" title="End"><i class="fas fa-times"></i> End</button>
+                <button type="button" class="btn btn-outline-success btn-sm action-button complete-btn" data-id="${maintenanceId}" data-room="${location}" title="Complete"><i class="fas fa-check"></i> Complete</button>
+                <button type="button" class="btn btn-outline-danger btn-sm action-button reject-btn" data-id="${maintenanceId}" data-room="${location}" title="End"><i class="fas fa-times"></i> End</button>
             </div>`;
       default:
          return '';

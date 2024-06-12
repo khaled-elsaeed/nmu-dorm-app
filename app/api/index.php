@@ -19,8 +19,7 @@ function extractEntityFromAction($actionString) {
 // Function to get the action based on the hashed value
 function getActionFromHash($hashedAction) {
     $actions = [
-        hash('sha256', 'building/delete') => 'building/delete',
-        hash('sha256', 'building/create') => 'building/create',
+        hash('sha256', 'dorm/getBuildings') => 'dorm/getBuildings',
         hash('sha256', 'apartment/create') => 'apartment/create',
         hash('sha256', 'apartment/delete') => 'apartment/delete',
         hash('sha256', 'room/create') => 'room/create',
@@ -81,15 +80,13 @@ $entity = extractEntityFromAction($action);
 
 if (!$entity) {
     http_response_code(400);
-    handleServiceResult(errorResponse("Invalid action format"));
+    handleServiceResult(errorResponse("Invalid action format "));
     exit; 
 }
 
 $entityToController = [
     'admin' => 'AdminController',
-    'building' => 'BuildingController',
-    'apartment' => 'ApartmentController',
-    'room' => 'RoomController',
+    'dorm' => 'DormController',
     'maintenance' => 'MaintenanceController',
 ];
 

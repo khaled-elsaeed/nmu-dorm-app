@@ -129,7 +129,7 @@ export function showLoader() {
         renderer: 'svg',
         loop: true,
         autoplay: true,
-        path: `${rootUrl}/project/nmu-dorm-app/assets/static/loader/loader.json` // Construct the full path to the Lottie JSON file
+        path: `${rootUrl}/project/nmu-dorm-app/app/views/assets/static/loader/loader.json` // Construct the full path to the Lottie JSON file
     };
 
     lottie.loadAnimation(animData);
