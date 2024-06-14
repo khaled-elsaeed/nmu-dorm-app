@@ -70,9 +70,11 @@ function generateStatusBadge(status) {
       'complete': '<span class="badge bg-success">Complete</span>',
       'pending': '<span class="badge bg-warning">Pending</span>',
       'inProgress': '<span class="badge bg-info">In Progress</span>',
+      'reject': '<span class="badge bg-danger">Rejected</span>', // Add badge for 'rejected' status
    };
    return badgeMap[status] || `<span class="badge">${status}</span>`;
 }
+
 
 function generateActionContent(request) {
    const { status, maintenanceId, location, completeDate } = request; // Destructure the request object
@@ -80,7 +82,7 @@ function generateActionContent(request) {
    switch (status) {
       case 'complete':
          return `<button type="button" class="btn btn-outline-success btn-sm action-button" title="Complete" disabled>${completeDate ? completeDate : 'Complete'}</button>`;
-         case 'pending':
+      case 'pending':
          return `
             <div class="btn-group" role="group">
                 <button type="button" class="btn btn-outline-primary btn-sm action-button start-btn" data-id="${maintenanceId}" data-room="${location}" title="Start"><i class="fas fa-play"></i> Start</button>
@@ -93,10 +95,13 @@ function generateActionContent(request) {
                 <button type="button" class="btn btn-outline-success btn-sm action-button complete-btn" data-id="${maintenanceId}" data-room="${location}" title="Complete"><i class="fas fa-check"></i> Complete</button>
                 <button type="button" class="btn btn-outline-danger btn-sm action-button reject-btn" data-id="${maintenanceId}" data-room="${location}" title="End"><i class="fas fa-times"></i> End</button>
             </div>`;
+      case 'reject':
+         return `<button type="button" class="btn btn-outline-danger btn-sm action-button" title="rejected" disabled>Rejected</button>`;
       default:
          return '';
    }
 }
+
 
 function handleStart(maintenanceId, room) {
       confirmAction("Confirm Start", `Are you sure you want to start the task for room ${room}?`)

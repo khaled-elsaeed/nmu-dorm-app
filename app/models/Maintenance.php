@@ -50,11 +50,10 @@ class MaintenanceModel {
         }
     }
 
-    public function rejectMaintenance($maintenanceId, $description) {
+    public function rejectMaintenance($maintenanceId) {
         try {
-            $sql = "UPDATE maintenance SET status = 'rejected', technician = :technician WHERE id = :id";
+            $sql = "UPDATE maintenance SET status = 'rejected' WHERE id = :id";
             $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(':technician', $description);
             $stmt->bindParam(':id', $maintenanceId);
             $stmt->execute();
             return successResponse("Maintenance rejected successfully.");
