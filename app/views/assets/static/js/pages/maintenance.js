@@ -24,6 +24,7 @@ function fetchMaintenanceRequests() {
          completeDate : request.completeDate,
          equipment: request.equipment,
          description: request.description, 
+         rejectDescription : request.rejectDescription,
          technician: request.technician, 
          status: request.status
       }));
@@ -80,27 +81,46 @@ function generateActionContent(request) {
    const { status, maintenanceId, location, completeDate } = request; // Destructure the request object
 
    switch (status) {
-      case 'complete':
-         return `<button type="button" class="btn btn-outline-success btn-sm action-button" title="Complete" disabled>${completeDate ? completeDate : 'Complete'}</button>`;
-      case 'pending':
-         return `
-            <div class="btn-group" role="group">
-                <button type="button" class="btn btn-outline-primary btn-sm action-button start-btn" data-id="${maintenanceId}" data-room="${location}" title="Start"><i class="fas fa-play"></i> Start</button>
-                <button type="button" class="btn btn-outline-success btn-sm action-button complete-btn" data-id="${maintenanceId}" data-room="${location}" title="Complete"><i class="fas fa-check"></i> Complete</button>
-                <button type="button" class="btn btn-outline-danger btn-sm action-button reject-btn" data-id="${maintenanceId}" data-room="${location}" title="Reject"><i class="fas fa-times"></i> Reject</button>
-            </div>`;
-      case 'inProgress':
-         return `
-            <div class="btn-group" role="group">
-                <button type="button" class="btn btn-outline-success btn-sm action-button complete-btn" data-id="${maintenanceId}" data-room="${location}" title="Complete"><i class="fas fa-check"></i> Complete</button>
-                <button type="button" class="btn btn-outline-danger btn-sm action-button reject-btn" data-id="${maintenanceId}" data-room="${location}" title="End"><i class="fas fa-times"></i> End</button>
-            </div>`;
-      case 'reject':
-         return `<button type="button" class="btn btn-outline-danger btn-sm action-button" title="rejected" disabled>Rejected</button>`;
-      default:
-         return '';
+       case 'complete':
+           return `<button type="button" class="btn btn-outline-success btn-sm action-button" title="Complete" disabled>${completeDate ? completeDate : 'Complete'}</button>`;
+       case 'pending':
+           return `
+               <div class="btn-group" role="group">
+                   <button type="button" class="btn btn-outline-primary btn-sm action-button start-btn" data-id="${maintenanceId}" data-room="${location}" title="Start"><i class="fas fa-play"></i> Start</button>
+                   <button type="button" class="btn btn-outline-success btn-sm action-button complete-btn" data-id="${maintenanceId}" data-room="${location}" title="Complete"><i class="fas fa-check"></i> Complete</button>
+                   <button type="button" class="btn btn-outline-danger btn-sm action-button reject-btn" data-id="${maintenanceId}" data-room="${location}" title="Reject"><i class="fas fa-times"></i> Reject</button>
+               </div>`;
+       case 'inProgress':
+           return `
+               <div class="btn-group" role="group">
+                   <button type="button" class="btn btn-outline-success btn-sm action-button complete-btn" data-id="${maintenanceId}" data-room="${location}" title="Complete"><i class="fas fa-check"></i> Complete</button>
+               </div>`;
+       case 'reject':
+           return `
+               <div class="d-flex align-items-center">
+                   <button type="button" class="btn btn-outline-danger btn-sm action-button" title="Rejected" disabled>Rejected</button>
+                   <i class="fas fa-info-circle text-danger icon ms-1 fa-lg reject-icon" style="cursor: pointer;" data-maintenance-id="${maintenanceId}" title="View Reject Details"></i>
+               </div>`;
+       default:
+           return '';
    }
 }
+
+
+$(document).on('click', '.reject-icon', function() {
+   console.log('Clicked');
+   const maintenanceId = $(this).data('maintenance-id');
+   console.log(maintenanceId);
+   // Assuming maintenanceRequests is an array containing your maintenance objects
+   const maintenance = maintenanceRequests.find(m => parseInt(m.maintenanceId) === parseInt(maintenanceId));
+   console.log(maintenance);
+   if (maintenance && maintenance.rejectDescription) {
+       $('#descriptionModal').modal('show');
+       $('#descriptionText').text(maintenance.rejectDescription);
+   }
+});
+
+
 
 
 function handleStart(maintenanceId, room) {
@@ -122,23 +142,23 @@ function handleStart(maintenanceId, room) {
 
 
 
-
 function handleReject(maintenanceId, room) {
    confirmAction("Confirm Rejection", `Are you sure you want to reject the task for room ${room}?`)
       .then(() => {
          getText("Enter the reason for rejecting the task", "Description")
-            .then(description => {
-               updateDataDB("maintenance/reject", { maintenanceId })
+            .then(rejectReason => {
+         updateDataDB("maintenance/reject", { maintenanceId : maintenanceId , rejectReason: rejectReason})
                   .then(() => {
-                      handleSuccess(`Task for room ${room} has been rejected successfully with reason: ${description}.`)
+                      handleSuccess(`Task for room ${room} has been rejected successfully with reason: ${rejectReason}.`)
                       fetchMaintenanceRequests();
                      })
                   .catch(() => handleFailure(`Failed to reject the task for room ${room}. Please try again later.`));
-            })
-            .catch(() => console.log('Input canceled'));
+      })
+         .catch(() => console.log('Input canceled'));
       })
       .catch(() => console.log('Reject action canceled'));
 }
+
 
 function handleComplete(maintenanceId, room) {
    confirmAction("Confirm Complete", `Are you sure you want to complete the task for room ${room}?`)

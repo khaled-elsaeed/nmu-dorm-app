@@ -20,6 +20,10 @@ function extractEntityFromAction($actionString) {
 function getActionFromHash($hashedAction) {
     $actions = [
         hash('sha256', 'dorm/getBuildings') => 'dorm/getBuildings',
+        hash('sha256', 'dorm/removeBuilding') => 'dorm/removeBuilding',
+        hash('sha256', 'dorm/addBuilding') => 'dorm/addBuilding',
+
+
         hash('sha256', 'apartment/create') => 'apartment/create',
         hash('sha256', 'apartment/delete') => 'apartment/delete',
         hash('sha256', 'room/create') => 'room/create',
@@ -66,6 +70,7 @@ $hashedAction = $_GET['action'];
 $postData = file_get_contents('php://input');
 $decodedData = base64_decode(urldecode($postData));
 $data = json_decode($decodedData, true);
+// echo var_dump($data) ;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($data === null || !is_array($data))) {
     // http_response_code(400);

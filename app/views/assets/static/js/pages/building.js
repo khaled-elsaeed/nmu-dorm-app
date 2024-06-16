@@ -25,15 +25,16 @@ function fetchBuildings() {
       populateTable();
    })
 }
-
 function populateTable() {
     const table = $("#table1").DataTable();
+    table.clear().draw(); // Clear existing data from the table
+    
     buildings.forEach(building => {
-        const row = constructTableRow(building);
-        table.row.add($(row)).draw();
+       const row = constructTableRow(building);
+       table.row.add($(row)).draw();
     });
-}
-
+ }
+ 
 function constructTableRow(building) {
     const occupancyBadge = generateOccupancyBadge(building.apartmentsCount,buildings.maxApartmentCapacity);
     return `
@@ -43,7 +44,7 @@ function constructTableRow(building) {
             <td>${building.apartmentsCount} / ${building.maxApartmentCapacity}</td>
             <td>${occupancyBadge}</td>
             <td>
-                <button type="button" class="btn btn-outline-danger btn-sm action-button remove-building-btn" data-id="${building.id}" data-number="${building.number}" title="Remove"><i class="fas fa-trash"></i> Delete</button>
+                <button type="button" class="btn btn-outline-danger btn-sm action-button remove-building-btn" data-id="${building.buildingId}" data-number="${building.number}" title="Remove"><i class="fas fa-trash"></i> Delete</button>
             </td>
         </tr>
     `;
@@ -84,7 +85,7 @@ function handleAddBuilding() {
 
     confirmAction("Confirm Complete", `Are you sure you want to add the building ${buildingData.number}?`)
     .then(() => {
-       postDataDB("building/add", { buildingNumber : buildingData.number , buildingCategory : buildingData.category })
+       postDataDB("dorm/addBuilding", { buildingNumber : buildingData.number , buildingCategory : buildingData.category })
           .then(() => handleSuccess(`Building ${buildingData.number} has been added successfully.`))
           .catch(() => handleFailure(`Failed to add the building ${buildingData.number}. Please try again later.`));
     })
@@ -92,14 +93,21 @@ function handleAddBuilding() {
 }
 
 function handleRemoveBuilding(buildingId, buildingNumber) {
-
+    // Confirm action with the user
     confirmAction("Confirm Remove", `Are you sure you want to remove the building ${buildingNumber}?`)
-      .then(() => {
-         deleteDataDB("building/remove", { buildingId : buildingId })
-            .then(() => handleSuccess(`Building ${buildingNumber} has been removed successfully.`))
-            .catch(() => handleFailure(`Failed to remove the building ${buildingNumber}. Please try again later.`));
-      })
-      .catch(() => console.log('Complete action canceled'));
+        .then(() => {
+            deleteDataDB("dorm/removeBuilding", { buildingId: buildingId })
+                .then(() => {
+                    fetchBuildings();
+                    handleSuccess(`Building ${buildingNumber} has been removed successfully.`);
+                })
+                .catch(() => {
+                    handleFailure(`Failed to remove the building ${buildingNumber}. Please try again later.`);
+                });
+        })
+        .catch(() => {
+            console.log('Complete action canceled');
+        });
 }
 
 

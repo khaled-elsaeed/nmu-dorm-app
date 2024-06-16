@@ -27,6 +27,10 @@ class Database {
         return $this->conn->prepare($sql);
     }
 
+    public function lastInsertId() {
+        return $this->conn->lastInsertId();
+    }
+
     public function beginTransaction() {
         return $this->conn->beginTransaction();
     }

@@ -34,13 +34,20 @@ class DormModel {
     }
     
 
-    public function addBuilding($name) {
+    public function addBuilding($buildingNumber , $buildingCategory) {
         try {
-            $sql = "INSERT INTO buildings (name) VALUES (:name)";
+            $sql = "INSERT INTO buildings (number,category) VALUES (:buildingNumber,:buildingCategory)";
             $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':buildingNumber', $buildingNumber);
+            $stmt->bindParam(':buildingCategory', $buildingCategory);
+
             $stmt->execute();
-            return successResponse("Building added successfully.");
+            // Check if any row was affected (building was deleted)
+            if ($stmt->rowCount() > 0) {
+                return successResponse("Building added successfully.");
+            } else {
+                return errorResponse("Building with ID {$buildingId} could not be Added.");
+            }
         } catch (PDOException $e) {
             logError($e->getMessage());
             return errorResponse("An error occurred while adding the building. Please try again later.");
@@ -53,12 +60,19 @@ class DormModel {
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':buildingId', $buildingId);
             $stmt->execute();
-            return successResponse("Building removed successfully.");
+    
+            // Check if any row was affected (building was deleted)
+            if ($stmt->rowCount() > 0) {
+                return successResponse("Building removed successfully.");
+            } else {
+                return errorResponse("Building with ID {$buildingId} not found or could not be deleted.");
+            }
         } catch (PDOException $e) {
             logError($e->getMessage());
             return errorResponse("An error occurred while removing the building. Please try again later.");
         }
     }
+    
 
     // Apartments
 

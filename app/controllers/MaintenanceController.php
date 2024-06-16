@@ -47,11 +47,11 @@ class MaintenanceController {
     }
 
     private function rejectMaintenance($data) {
-        if (!isset($data['maintenanceId'])) {
-            return errorResponse("Maintenance ID  is missing.");
+        if (!isset($data['maintenanceId']) || !isset($data['rejectReason'])) {
+            return errorResponse("Maintenance ID or rejct reason is missing.");
         }
         
-        $result = $this->maintenanceModel->rejectMaintenance($data['maintenanceId']);
+        $result = $this->maintenanceModel->rejectMaintenance($data['maintenanceId'],$data['rejectReason']);
         if ($result['success'] === true) {
             return successResponse();
         } else {

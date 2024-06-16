@@ -44,11 +44,11 @@ class DormController {
     }
 
     public function addBuilding($data) {
-        if (!isset($data['name'])) {
-            return errorResponse("Building name is missing.");
+        if (!isset($data['buildingNumber']) || !isset($data['buildingCategory'])) {
+            return errorResponse("Building name or Category is missing.");
         }
 
-        $result = $this->dormModel->addBuilding($data['name']);
+        $result = $this->dormModel->addBuilding($data['buildingNumber'],$data['buildingCategory']);
         if ($result['success'] === true) {
             return successResponse();
         } else {
@@ -57,11 +57,13 @@ class DormController {
     }
 
     public function removeBuilding($data) {
+        
         if (!isset($data['buildingId'])) {
             return errorResponse("Building ID is missing.");
         }
 
         $result = $this->dormModel->removeBuilding($data['buildingId']);
+
         if ($result['success'] === true) {
             return successResponse();
         } else {
