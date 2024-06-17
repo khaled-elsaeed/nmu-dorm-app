@@ -34,38 +34,24 @@ function fetchBuildings() {
    populateBuildingSelect();
 }
 
-function fetchApartments() {
+function fetchBuildings() {
 
-   apartments = [{
-         id: 2,
-         number: 1,
-         building: 2,
-         buildingId: 5,
-         vacantRoom: '25',
-         occupancy: 'fullyOccupied'
-      },
-      {
-         id: 3,
-         number: 2,
-         building: 3,
-         buildingId: 5,
-         vacantRoom: '13',
-         occupancy: 'vacant'
-      },
-      {
-         id: 1,
-         number: 3,
-         building: 5,
-         buildingId: 5,
-         vacantRoom: '15',
-         occupancy: 'partiallyOccupied'
-      },
-   ];
+   getDataDB("dorm/getapartments")
+  .then(data => {
+     apartments = data.map(apartment => ({
+        apartmentId: apartment.id,
+        number: apartment.number,
+        category: apartment.category,
+        maxApartmentCapacity: apartment.maxApartmentCapacity,
+        apartmentsCount : apartment.apartmentsCount
+     }));
+     populateTable();
+  })
 }
-
 function populateTable() {
-
    const table = $("#table1").DataTable();
+   table.clear().draw(); // Clear existing data from the table
+   
    apartments.forEach(apartment => {
       const row = constructTableRow(apartment);
       table.row.add($(row)).draw();

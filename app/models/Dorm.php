@@ -34,12 +34,14 @@ class DormModel {
     }
     
 
-    public function addBuilding($buildingNumber , $buildingCategory) {
+    public function addBuilding($buildingNumber , $buildingCategory,$buildingMaxApartmentCapacity) {
         try {
-            $sql = "INSERT INTO buildings (number,category) VALUES (:buildingNumber,:buildingCategory)";
+            $sql = "INSERT INTO buildings (number,category,maxApartmentCapacity) VALUES (:buildingNumber,:buildingCategory,:buildingMaxApartmentCapacity)";
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':buildingNumber', $buildingNumber);
             $stmt->bindParam(':buildingCategory', $buildingCategory);
+            $stmt->bindParam(':buildingMaxApartmentCapacity', $buildingMaxApartmentCapacity);
+
 
             $stmt->execute();
             // Check if any row was affected (building was deleted)

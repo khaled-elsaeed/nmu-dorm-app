@@ -65,31 +65,42 @@ function generateOccupancyBadge(apartmentsCount, maxApartmentCapacity) {
 function getNewBuildingData(){
     const buildingNumber = $('#buildingNumber').val();
     const buildingCategory = $('#buildingCategory').val();
+    const buildingMaxApartmentCapacity = $('#buildingMaxApartmentCapacity').val();
+
     // Validate input
-    if (!buildingNumber || !buildingCategory) {
+    if (!buildingNumber || !buildingCategory || !buildingMaxApartmentCapacity) {
         handleWarning("Please Fill All Fields !");
         return;
     }
 
     const buildingData = {
         number: buildingNumber,
-        category: buildingCategory
+        category: buildingCategory,
+        MaxApartmentCapacity : buildingMaxApartmentCapacity
     };
 
     return buildingData;
 }
 
+
 function handleAddBuilding() {
 
     const buildingData = getNewBuildingData();
-
     confirmAction("Confirm Complete", `Are you sure you want to add the building ${buildingData.number}?`)
-    .then(() => {
-       postDataDB("dorm/addBuilding", { buildingNumber : buildingData.number , buildingCategory : buildingData.category })
-          .then(() => handleSuccess(`Building ${buildingData.number} has been added successfully.`))
-          .catch(() => handleFailure(`Failed to add the building ${buildingData.number}. Please try again later.`));
-    })
-    .catch(() => console.log('Add action canceled'));
+        .then(() => {
+            postDataDB("dorm/addBuilding", { buildingNumber : buildingData.number , buildingCategory : buildingData.category ,buildingMaxApartmentCapacity : buildingData.MaxApartmentCapacity  })
+            .then(() => {
+                    fetchBuildings();
+                    $('#addBuildingModal').modal('hide');
+                    handleSuccess(`Building ${buildingData.number} has been added successfully.`);
+                })
+                .catch(() => {
+                    handleFailure(`Failed to add the building ${buildingData.number}. Please try again later.`);
+                });
+        })
+        .catch(() => {
+            console.log('Add action canceled');
+        });
 }
 
 function handleRemoveBuilding(buildingId, buildingNumber) {

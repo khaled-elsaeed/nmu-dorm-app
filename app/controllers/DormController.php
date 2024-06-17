@@ -44,11 +44,11 @@ class DormController {
     }
 
     public function addBuilding($data) {
-        if (!isset($data['buildingNumber']) || !isset($data['buildingCategory'])) {
-            return errorResponse("Building name or Category is missing.");
+        if (!isset($data['buildingNumber']) || !isset($data['buildingCategory']) || !isset($data['buildingMaxApartmentCapacity'])) {
+            return errorResponse("Building name or Category or apartment Capicity is missing.");
         }
 
-        $result = $this->dormModel->addBuilding($data['buildingNumber'],$data['buildingCategory']);
+        $result = $this->dormModel->addBuilding($data['buildingNumber'],$data['buildingCategory'],$data['buildingMaxApartmentCapacity']);
         if ($result['success'] === true) {
             return successResponse();
         } else {
