@@ -71,7 +71,51 @@ class DormController {
         }
     }
 
-    // Implement methods for apartments and rooms similar to buildings
+    public function getApartments() {
+        $result = $this->dormModel->fetchApartments();
+        if ($result['success'] === true) {
+            return successResponse($result['data']);
+        } else {
+            return errorResponse($result['error']);
+        }
+    }
+
+    public function removeApartment($data) {
+        
+        if (!isset($data['apartmentId'])) {
+            return errorResponse("Apartment ID is missing.");
+        }
+
+        $result = $this->dormModel->removeApartment($data['apartmentId']);
+
+        if ($result['success'] === true) {
+            return successResponse();
+        } else {
+            return errorResponse($result['error']);
+        }
+    }
+
+    public function addApartment($data) {
+        if (!isset($data['apartmentNumber'])  || !isset($data['buildingId'])) {
+            return errorResponse("apartment name  or apartment building is missing.");
+        }
+
+        $result = $this->dormModel->addapartment($data['apartmentNumber'],$data['buildingId']);
+        if ($result['success'] === true) {
+            return successResponse();
+        } else {
+            return errorResponse($result['error']);
+        }
+    }
+
+    public function getRooms() {
+        $result = $this->dormModel->fetchRooms();
+        if ($result['success'] === true) {
+            return successResponse($result['data']);
+        } else {
+            return errorResponse($result['error']);
+        }
+    }
 
 }
 

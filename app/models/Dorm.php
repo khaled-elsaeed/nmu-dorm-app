@@ -78,11 +78,21 @@ class DormModel {
 
     // Apartments
 
-    public function fetchApartments($buildingId) {
+    public function fetchApartments($buildingId = NULL) {
         try {
-            $sql = "SELECT * FROM apartments WHERE building_id = :buildingId";
-            $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(':buildingId', $buildingId);
+            if($buildingId == NULL){
+                $sql = "SELECT a.*, COUNT(r.id) AS roomsCount
+                FROM apartments AS a
+                LEFT JOIN rooms AS r ON r.apartmentId = a.id
+                GROUP BY a.id";        
+                $stmt = $this->db->prepare($sql);
+            }
+            else{
+                $sql = "SELECT * FROM apartments WHERE building_id = :buildingId";
+                $stmt = $this->db->prepare($sql);
+                $stmt->bindParam(':buildingId', $buildingId);
+            }
+
             $stmt->execute();
             $apartments = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return successResponse($apartments);
@@ -92,7 +102,7 @@ class DormModel {
         }
     }
 
-    public function addApartment($buildingId) {
+    public function addApartment($apartmentNumber,$buildingId) {
         try {
             
             $maxApartmentCapacity = $this->getMaxApartmentCapacity($buildingId);
@@ -108,10 +118,11 @@ class DormModel {
                 return errorResponse("Cannot add more apartments. Maximum capacity reached for this building.");
             }
             
-            
-            $sql = "INSERT INTO apartments (building_id) VALUES (:buildingId)";
+            $sql = "INSERT INTO apartments (number,buildingId) VALUES (:number,:buildingId)";
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':buildingId', $buildingId);
+            $stmt->bindParam(':number', $apartmentNumber);
+
             $stmt->execute();
             
             return successResponse("Apartment added successfully.");
@@ -122,16 +133,16 @@ class DormModel {
     }
 
     private function getMaxApartmentCapacity($buildingId) {
-        $sql = "SELECT max_apartment_capacity FROM buildings WHERE id = :buildingId";
+        $sql = "SELECT maxApartmentCapacity FROM buildings WHERE id = :buildingId";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':buildingId', $buildingId);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result ? $result['max_apartment_capacity'] : false;
+        return $result ? $result['maxApartmentCapacity'] : false;
     }
     
     private function getExistingApartmentsCount($buildingId) {
-        $sql = "SELECT COUNT(*) AS apartmentCount FROM apartments WHERE building_id = :buildingId";
+        $sql = "SELECT COUNT(*) AS apartmentCount FROM apartments WHERE buildingId = :buildingId";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':buildingId', $buildingId);
         $stmt->execute();
@@ -140,45 +151,47 @@ class DormModel {
     }
 
     public function removeApartment($apartmentId) {
-        try {
+        try {    
             $sql = "DELETE FROM apartments WHERE id = :apartmentId";
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':apartmentId', $apartmentId);
-            $stmt->execute();
-            return successResponse("Apartment removed successfully.");
+    
+            if ($stmt->execute() && $stmt->rowCount() > 0) {
+                return successResponse("Apartment removed successfully.");
+            } else {
+                return errorResponse("Failed to remove the apartment. Apartment may not exist or an error occurred.");
+            }
         } catch (PDOException $e) {
             logError($e->getMessage());
             return errorResponse("An error occurred while removing the apartment. Please try again later.");
         }
     }
 
+    
+    
+
     // Rooms
 
-    public function fetchRooms($apartmentId) {
+    public function fetchRooms() {
         try {
-            $sql = "SELECT * FROM rooms WHERE apartment_id = :apartmentId";
-            $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(':apartmentId', $apartmentId);
+                $sql = "SELECT * from rooms";        
+                $stmt = $this->db->prepare($sql);
             $stmt->execute();
-            $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            return successResponse($rooms);
+            $apartments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return successResponse($apartments);
         } catch (PDOException $e) {
             logError($e->getMessage());
-            return errorResponse("An error occurred while fetching room data. Please try again later.");
+            return errorResponse("An error occurred while fetching apartment data. Please try again later.");
         }
     }
 
+
     public function addRoom($apartmentId) {
         try {
-            
-            $maxRoomCapacity = $this->getMaxRoomCapacity($apartmentId);
             if ($maxRoomCapacity === false) {
                 return errorResponse("Failed to retrieve maximum room capacity for this apartment.");
             }
-            
-            
             $existingRoomsCount = $this->getExistingRoomsCount($apartmentId);
-            
             
             if ($existingRoomsCount >= $maxRoomCapacity) {
                 return errorResponse("Cannot add more rooms. Maximum capacity reached for this apartment.");

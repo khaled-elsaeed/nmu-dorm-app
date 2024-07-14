@@ -1,5 +1,5 @@
 // Utility Functions
-import { confirmAction, downloadExcel, handleWarning,handleFailure, handleSuccess, applyBlurEffect, removeBlurEffect, showLoader, hideLoader, postDataDB, deleteDataDB } from "../helper/utils.js";
+import { confirmAction, downloadExcel, handleWarning,handleFailure, handleSuccess, applyBlurEffect, removeBlurEffect, showLoader, hideLoader, postDataDB, deleteDataDB, getDataDB } from "../helper/utils.js";
 
 function attachEventListener(buttonSelector, eventType, handler) {
     $(document).on(eventType, buttonSelector, function () {
@@ -9,36 +9,46 @@ function attachEventListener(buttonSelector, eventType, handler) {
     });
 }
 
-let rooms = [];
-let apartments = [];
-let buildings = [];
+var rooms = [];
+var apartments = [];
+var buildings = [];
 
-function fetchRooms() {
-    rooms = [
-        { id: 2, number: 1, buildingId: 44, building: 25, apartment: 25, occupancy: 'fullyOccupied' },
-        { id: 3, number: 2, building: 78, apartment: 13, occupancy: 'vacant' },
-        { id: 1, number: 3, building: 98, apartment: 15, occupancy: 'partiallyOccupied' }
-    ];
+async function fetchRooms() {
+
+    try {
+        const roomsData = await getDataDB("dorm/getRooms");
+        rooms = roomsData;
+        await populateTable(); 
+     } catch (error) {
+        console.error("An error occurred while fetching rooms:", error);
+        handleFailure("Failed to fetch rooms. Please try again later.");
+     }
 }
 
-function fetchBuildings() {
-    buildings = [
-        { id: 2, number: 1, occupancy: 'fullyOccupied' },
-        { id: 3, number: 2, occupancy: 'vacant' },
-        { id: 1, number: 3, occupancy: 'partiallyOccupied' }
-    ];
-    populateBuildingSelect();
+async function fetchBuildings(){
+    try {
+       const buildingsData = await getDataDB("dorm/getBuildings");
+       buildings = buildingsData;
+       populateBuildingSelect(); // Populate select options after buildings are fetched
+    } catch (error) {
+       console.error("An error occurred while fetching buildings:", error);
+       handleFailure("Failed to fetch buildings. Please try again later.");
+    }
+ }
+
+
+async function fetchApartments(){
+   try {
+      const apartmentsData = await getDataDB("dorm/getApartments");
+      apartments = apartmentsData;
+      populateApartmentSelect(); // Populate select options after apartments are fetched
+   } catch (error) {
+      console.error("An error occurred while fetching apartments:", error);
+      handleFailure("Failed to fetch apartments. Please try again later.");
+   }
 }
 
-function fetchApartments() {
-    apartments = [
-        { id: 23, number: 5, buildingId: 2, occupancy: 'fullyOccupied' },
-        { id: 33, number: 6, buildingId: 3, occupancy: 'vacant' },
-        { id: 13, number: 7, buildingId: 1, occupancy: 'partiallyOccupied' }
-    ];
-}
-
-function populateTable() {
+async function populateTable() {
     const table = $("#table1").DataTable();
     rooms.forEach(room => {
         const row = constructTableRow(room);
@@ -47,12 +57,15 @@ function populateTable() {
 }
 
 function constructTableRow(room) {
-    const occupancyBadge = generateOccupancyBadge(room.occupancy);
+    const occupancyBadge = generateOccupancyBadge(room.occupiedStatues);
+    const apartment = apartments.find((apartment) => apartment.id == room.apartmentId);
+    const building = buildings.find( (building) => building.id == apartment.buildingId)
+    
     return `
         <tr>
             <td>${room.number}</td>
-            <td>${room.building}</td>
-            <td>${room.apartment}</td>
+            <td>${building.number}</td>
+            <td>${apartment.number}</td>
             <td>${occupancyBadge}</td>
             <td>
             <button type="button" class="btn btn-outline-danger btn-sm action-button remove-room-btn" data-id="${room.id}" data-number="${room.number}" title="Remove"><i class="fas fa-trash"></i> Delete</button>
@@ -61,13 +74,12 @@ function constructTableRow(room) {
     `;
 }
 
-function generateOccupancyBadge(occupancyStatus) {
-    const badgeMap = {
-        'vacant': '<span class="badge bg-success">Vacant</span>',
-        'fullyOccupied': '<span class="badge bg-danger">Fully Occupied</span>',
-        'partiallyOccupied': '<span class="badge bg-warning">Partially Occupied</span>',
-    };
-    return badgeMap[occupancyStatus] || `<span class="badge">${occupancyStatus}</span>`;
+function generateOccupancyBadge(occupiedStatues) {
+    if (occupiedStatues === 0) {
+        return '<span class="badge bg-success">Vacant</span>';
+    } else {
+        return '<span class="badge bg-danger">Occupied</span>';
+    } 
 }
 
 function populateBuildingSelect() {
@@ -80,8 +92,7 @@ function populateBuildingSelect() {
 }
 
 function populateApartmentSelect() {
-    const buildingId = $(this).val(); // Get the value of the selected building ID
-    console.log(buildingId);
+    const buildingId = $(this).val(); 
     const apartmentSelect = $('#roomApartmentNumber');
     apartmentSelect.empty();
     apartmentSelect.append(`<option value="" disabled selected>Select Apartment</option>`);
@@ -142,11 +153,10 @@ $(document).ready(function () {
     showLoader();
 
     // Simulate fetching data after a delay
-    setTimeout(() => {
-        fetchRooms();
-        populateTable();
-        fetchBuildings();
-        fetchApartments();
+    setTimeout(async () => {
+        await fetchBuildings();
+        await fetchApartments();
+        await fetchRooms();
         hideLoader();
         removeBlurEffect();
     }, 1000); // Simulate 5 seconds delay for fetching data

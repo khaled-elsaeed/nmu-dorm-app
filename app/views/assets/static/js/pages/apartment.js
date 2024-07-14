@@ -1,5 +1,5 @@
 // Utility Functions
-import { confirmAction, handleFailure, handleSuccess, applyBlurEffect, removeBlurEffect, showLoader, hideLoader, postDataDB, deleteDataDB } from "../helper/utils.js";
+import { confirmAction, handleFailure, handleSuccess, applyBlurEffect, removeBlurEffect, showLoader, hideLoader, postDataDB, deleteDataDB, getDataDB } from "../helper/utils.js";
 
 function attachEventListener(buttonSelector, eventType, handler) {
     $(document).on(eventType, buttonSelector, function () {
@@ -10,45 +10,39 @@ function attachEventListener(buttonSelector, eventType, handler) {
  }
 
 
-let apartments = [];
-let buildings = [];
+var apartments = [];
+var buildings = [];
 
-function fetchBuildings() {
 
-   buildings = [{
-         id: 2,
-         number: 11,
-         occupancy: 'fullyOccupied'
-      },
-      {
-         id: 3,
-         number: 22,
-         occupancy: 'vacant'
-      },
-      {
-         id: 1,
-         number: 33,
-         occupancy: 'partiallyOccupied'
-      }
-   ];
-   populateBuildingSelect();
+
+
+
+
+async function fetchBuildings(){
+   try {
+      const buildingsData = await getDataDB("dorm/getBuildings");
+      buildings = buildingsData;
+      populateBuildingSelect(); // Populate select options after buildings are fetched
+   } catch (error) {
+      console.error("An error occurred while fetching buildings:", error);
+      handleFailure("Failed to fetch buildings. Please try again later.");
+   }
 }
 
-function fetchBuildings() {
-
-   getDataDB("dorm/getapartments")
-  .then(data => {
-     apartments = data.map(apartment => ({
-        apartmentId: apartment.id,
-        number: apartment.number,
-        category: apartment.category,
-        maxApartmentCapacity: apartment.maxApartmentCapacity,
-        apartmentsCount : apartment.apartmentsCount
-     }));
-     populateTable();
-  })
+async function fetchApartments() {
+   try {
+      const apartmentsData = await getDataDB("dorm/getApartments");
+      apartments = apartmentsData;
+      await populateTable(); // Wait for table population to complete
+   } catch (error) {
+      console.error("An error occurred while fetching apartments:", error);
+      handleFailure("Failed to fetch apartments. Please try again later.");
+   }
 }
-function populateTable() {
+
+
+
+async function populateTable() {
    const table = $("#table1").DataTable();
    table.clear().draw(); // Clear existing data from the table
    
@@ -59,13 +53,14 @@ function populateTable() {
 }
 
 function constructTableRow(apartment) {
-
-   const occupancyBadge = generateOccupancyBadge(apartment.occupancy);
+   const occupancyBadge = generateOccupancyBadge(apartment.roomsCount);
+   const building = buildings.find( (building)=> building.id === apartment.buildingId)
+   console.log(building.number);
    return `
         <tr>
             <td>${apartment.number}</td>
-            <td>${apartment.building}</td>
-            <td>${apartment.vacantRoom}</td>
+            <td>${building.number}</td>
+            <td>${apartment.roomsCount}</td>
             <td>${occupancyBadge}</td>
             <td>
                <button type="button" class="btn btn-outline-danger btn-sm action-button remove-apartment-btn" data-id="${apartment.id}" data-number="${apartment.number}" title="Remove"><i class="fas fa-trash"></i> Delete</button>
@@ -116,30 +111,43 @@ function getNewApartmentData(){
 
 function handleAddApartment() {
 
-   
    const apartmentData = getNewApartmentData();
-
    confirmAction("Confirm Complete", `Are you sure you want to add the apartment ${apartmentData.number}?`)
-    .then(() => {
-       postDataDB("apartment/add", { apartmentNumber : apartmentData.number , buildingId : apartmentData.buildingId })
-          .then(() => handleSuccess(`apartment ${apartmentData.number} has been added successfully.`))
-          .catch(() => handleFailure(`Failed to add the apartment ${apartmentData.number}. Please try again later.`));
-    })
-    .catch(() => console.log('Add action canceled'));
+       .then(() => {
+           postDataDB("dorm/addApartment", { apartmentNumber : apartmentData.number , buildingId : apartmentData.buildingId })
+           .then(async () => {
+                   await fetchApartments();
+                   $('#addApartmentModal').modal('hide');
+                   handleSuccess(`Apartment ${apartmentData.number} has been added successfully.`);
+               })
+               .catch(() => {
+                   handleFailure(`Failed to add the apartment ${apartmentData.number}. Please try again later.`);
+               });
+       })
+       .catch(() => {
+           console.log('Add action canceled');
+       });
 }
-
 
 function handleRemoveApartment(apartmentId, apartmentNumber) {
+   const apartment = apartments.find( (apartment)=> apartment.id === apartmentId)
+   const building = buildings.find( (building)=> building.id === apartment.buildingId)
 
-   confirmAction("Confirm Remove", `Are you sure you want to remove the apartment ${apartmentNumber}?`)
-   .then(() => {
-      deleteDataDB("apartment/remove", { apartmentId : apartmentId })
-         .then(() => handleSuccess(`apartment ${apartmentNumber} has been removed successfully.`))
-         .catch(() => handleFailure(`Failed to remove the apartment ${apartmentNumber}. Please try again later.`));
-   })
-   .catch(() => console.log('Complete action canceled'));
+   confirmAction("Confirm Remove", `Are you sure you want to remove the apartment ${apartmentNumber} within building ${building.number}?`)
+       .then(() => {
+           deleteDataDB("dorm/removeApartment", { apartmentId : apartmentId })
+               .then(async () => {
+                   await fetchApartments();
+                   handleSuccess(`apartment ${apartmentNumber} has been removed successfully.`);
+               })
+               .catch(() => {
+                   handleFailure(`Failed to remove the apartment ${apartmentNumber}. Please try again later.`);
+               });
+       })
+       .catch(() => {
+           console.log('Complete action canceled');
+       });
 }
-
 
 
 function downloadExcel() {
@@ -178,10 +186,9 @@ $(document).ready(function () {
    showLoader();
 
    // Simulate fetching data after a delay
-   setTimeout(() => {
-      fetchApartments();
-      populateTable();
-      fetchBuildings();
+   setTimeout(async () => {
+      await fetchBuildings();
+      await fetchApartments();
       hideLoader();
       removeBlurEffect();
    }, 1000); // Simulate 5 seconds delay for fetching data
