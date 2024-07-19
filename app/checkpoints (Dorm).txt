@@ -1,0 +1,1 @@
+retrieving rooms only (i am stopping here ) , we should begin to add and remove them by copying apartment functions like this 
