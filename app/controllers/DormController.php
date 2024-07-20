@@ -18,13 +18,13 @@ class DormController {
             case 'dorm/removeBuilding':
                 return $this->removeBuilding($data);
             case 'dorm/getApartments':
-                return $this->getApartments($data);
+                return $this->getApartments();
             case 'dorm/addApartment':
                 return $this->addApartment($data);
             case 'dorm/removeApartment':
                 return $this->removeApartment($data);
             case 'dorm/getRooms':
-                return $this->getRooms($data);
+                return $this->getRooms();
             case 'dorm/addRoom':
                 return $this->addRoom($data);
             case 'dorm/removeRoom':
@@ -34,89 +34,75 @@ class DormController {
         }
     }
 
-    public function getBuildings() {
-        $result = $this->dormModel->fetchBuildings();
-        if ($result['success'] === true) {
-            return successResponse($result['data']);
-        } else {
-            return errorResponse($result['error']);
-        }
+    private function getBuildings() {
+        return $this->processResult($this->dormModel->fetchBuildings());
     }
 
-    public function addBuilding($data) {
-        if (!isset($data['buildingNumber']) || !isset($data['buildingCategory']) || !isset($data['buildingMaxApartmentCapacity'])) {
-            return errorResponse("Building name or Category or apartment Capicity is missing.");
+    private function addBuilding($data) {
+        if ($this->isMissingKeys($data, ['buildingNumber', 'buildingCategory', 'buildingMaxApartmentCapacity'])) {
+            return errorResponse("Building number, category, or maximum apartment capacity is missing.");
         }
-
-        $result = $this->dormModel->addBuilding($data['buildingNumber'],$data['buildingCategory'],$data['buildingMaxApartmentCapacity']);
-        if ($result['success'] === true) {
-            return successResponse();
-        } else {
-            return errorResponse($result['error']);
-        }
+        return $this->processResult($this->dormModel->addBuilding($data['buildingNumber'], $data['buildingCategory'], $data['buildingMaxApartmentCapacity']));
     }
 
-    public function removeBuilding($data) {
-        
-        if (!isset($data['buildingId'])) {
+    private function removeBuilding($data) {
+        if ($this->isMissingKeys($data, ['buildingId'])) {
             return errorResponse("Building ID is missing.");
         }
-
-        $result = $this->dormModel->removeBuilding($data['buildingId']);
-
-        if ($result['success'] === true) {
-            return successResponse();
-        } else {
-            return errorResponse($result['error']);
-        }
+        return $this->processResult($this->dormModel->removeBuilding($data['buildingId']));
     }
 
-    public function getApartments() {
-        $result = $this->dormModel->fetchApartments();
-        if ($result['success'] === true) {
-            return successResponse($result['data']);
-        } else {
-            return errorResponse($result['error']);
-        }
+    private function getApartments() {
+        return $this->processResult($this->dormModel->fetchApartments());
     }
 
-    public function removeApartment($data) {
-        
-        if (!isset($data['apartmentId'])) {
+    private function addApartment($data) {
+        if ($this->isMissingKeys($data, ['apartmentNumber', 'buildingId'])) {
+            return errorResponse("Apartment number or building ID is missing.");
+        }
+        return $this->processResult($this->dormModel->addApartment($data['apartmentNumber'], $data['buildingId']));
+    }
+
+    private function removeApartment($data) {
+        if ($this->isMissingKeys($data, ['apartmentId'])) {
             return errorResponse("Apartment ID is missing.");
         }
+        return $this->processResult($this->dormModel->removeApartment($data['apartmentId']));
+    }
 
-        $result = $this->dormModel->removeApartment($data['apartmentId']);
+    private function getRooms() {
+        return $this->processResult($this->dormModel->fetchRooms());
+    }
 
+    private function addRoom($data) {
+        if ($this->isMissingKeys($data, ['roomNumber', 'apartmentId'])) {
+            return errorResponse("Room number or apartment ID is missing.");
+        }
+        return $this->processResult($this->dormModel->addRoom($data['roomNumber'], $data['apartmentId'])); 
+    }
+
+    private function removeRoom($data) {
+        if ($this->isMissingKeys($data, ['roomId'])) {
+            return errorResponse("Room ID is missing.");
+        }
+        return $this->processResult($this->dormModel->removeRoom($data['roomId']));
+    }
+
+    private function isMissingKeys($data, $keys) {
+        foreach ($keys as $key) {
+            if (!isset($data[$key])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function processResult($result) {
         if ($result['success'] === true) {
-            return successResponse();
+            return successResponse($result['data'] ?? null);
         } else {
             return errorResponse($result['error']);
         }
     }
-
-    public function addApartment($data) {
-        if (!isset($data['apartmentNumber'])  || !isset($data['buildingId'])) {
-            return errorResponse("apartment name  or apartment building is missing.");
-        }
-
-        $result = $this->dormModel->addapartment($data['apartmentNumber'],$data['buildingId']);
-        if ($result['success'] === true) {
-            return successResponse();
-        } else {
-            return errorResponse($result['error']);
-        }
-    }
-
-    public function getRooms() {
-        $result = $this->dormModel->fetchRooms();
-        if ($result['success'] === true) {
-            return successResponse($result['data']);
-        } else {
-            return errorResponse($result['error']);
-        }
-    }
-
 }
-
 ?>

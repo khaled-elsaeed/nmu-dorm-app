@@ -186,8 +186,10 @@ class DormModel {
     }
 
 
-    public function addRoom($apartmentId) {
+    public function addRoom($roonNumber,$apartmentId) {
         try {
+
+            $maxRoomCapacity = $this->getMaxRoomCapacity($apartmentId);
             if ($maxRoomCapacity === false) {
                 return errorResponse("Failed to retrieve maximum room capacity for this apartment.");
             }
@@ -198,8 +200,9 @@ class DormModel {
             }
             
             
-            $sql = "INSERT INTO rooms (apartment_id) VALUES (:apartmentId)";
+            $sql = "INSERT INTO rooms (number,apartmentId) VALUES (:roonNumber,:apartmentId)";
             $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':roonNumber', $roonNumber);
             $stmt->bindParam(':apartmentId', $apartmentId);
             $stmt->execute();
             
@@ -211,16 +214,17 @@ class DormModel {
     }
 
     private function getMaxRoomCapacity($apartmentId) {
-        $sql = "SELECT max_room_capacity FROM apartments WHERE id = :apartmentId";
+        logError($apartmentId);
+        $sql = "SELECT maxRoomCapacity FROM apartments WHERE id = :apartmentId";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':apartmentId', $apartmentId);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result ? $result['max_room_capacity'] : false;
+        return $result ? $result['maxRoomCapacity'] : false;       
     }
 
     private function getExistingRoomsCount($apartmentId) {
-        $sql = "SELECT COUNT(*) AS roomCount FROM rooms WHERE apartment_id = :apartmentId";
+        $sql = "SELECT COUNT(*) AS roomCount FROM rooms WHERE apartmentId = :apartmentId";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':apartmentId', $apartmentId);
         $stmt->execute();

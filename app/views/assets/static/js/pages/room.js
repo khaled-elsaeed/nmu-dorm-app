@@ -50,6 +50,7 @@ async function fetchApartments(){
 
 async function populateTable() {
     const table = $("#table1").DataTable();
+    table.clear().draw(); // Clear existing data from the table
     rooms.forEach(room => {
         const row = constructTableRow(room);
         table.row.add($(row)).draw();
@@ -102,17 +103,30 @@ function populateApartmentSelect() {
               });
 }
 
-function handleRemoveRoom(roomId, roomNumber) {
-    confirmAction("Confirm Remove", `Are you sure you want to remove the room ${roomNumber}?`)
-        .then(() => {
-            deleteDataDB("room/remove", { roomId: roomId })
-                .then(() => handleSuccess(`Room ${roomNumber} has been removed successfully.`))
-                .catch(() => handleFailure(`Failed to remove the room ${roomNumber}. Please try again later.`));
-        })
-        .catch(() => console.log('Complete action canceled'));
-}
 
-function getNewRoomData() {
+function handleAddRoom() {
+
+    const roomData = getNewRoomData();
+    confirmAction("Confirm Complete", `Are you sure you want to add the room ${roomData.number}?`)
+        .then(() => {
+            postDataDB("dorm/addRoom", { roomNumber : roomData.number , buildingId : roomData.buildingId ,apartmentId : roomData.apartmentId})
+            .then(async () => {
+                await fetchBuildings();
+                await fetchApartments();
+                await fetchRooms();
+                    $('#addRoomModal').modal('hide');
+                    handleSuccess(`Room ${roomData.number} has been added successfully.`);
+                })
+                .catch(() => {
+                    handleFailure(`Failed to add the room ${roomData.number}. Please try again later.`);
+                });
+        })
+        .catch(() => {
+            console.log('Add action canceled');
+        });
+ }
+
+ function getNewRoomData() {
     const roomNumber = $('#roomNumber').val();
     const roomBuildingNumber = $('#roomBuildingNumber').val();
     const roomApartmentNumber = $('#roomApartmentNumber').val();
@@ -128,24 +142,37 @@ function getNewRoomData() {
         apartmentId: roomApartmentNumber
     };
 }
-
-function handleAddRoom() {
-    const roomData = getNewRoomData();
-    if (!roomData) return;
-
-    confirmAction("Confirm Complete", `Are you sure you want to add the room ${roomData.number}?`)
+ 
+ function handleRemoveRoom(roomId, roomNumber) {
+    const room = rooms.find( (room)=> room.id === roomId)
+    const apartment  = apartments.find((apartment) => apartment.id = room.apartmentId)
+    const building = buildings.find( (building)=> building.id === apartment.buildingId)
+ 
+    confirmAction("Confirm Remove", `Are you sure you want to remove the room ${roomNumber} within building ${building.number}?`)
         .then(() => {
-            postDataDB("room/add", { roomNumber: roomData.number, buildingId: roomData.buildingId, apartmentId: roomData.apartmentId })
-                .then(() => handleSuccess(`Room ${roomData.number} has been added successfully.`))
-                .catch(() => handleFailure(`Failed to add the room ${roomData.number}. Please try again later.`));
+            deleteDataDB("dorm/removeRoom", { roomId : roomId })
+                .then(async () => {
+                    await fetchBuildings();
+                    await fetchApartments();
+                    await fetchRooms();
+                    handleSuccess(`room ${roomNumber} has been removed successfully.`);
+                })
+                .catch(() => {
+                    handleFailure(`Failed to remove the room ${roomNumber}. Please try again later.`);
+                });
         })
-        .catch(() => console.log('Add action canceled'));
-}
+        .catch(() => {
+            console.log('Complete action canceled');
+        });
+ }
+
 
 function downloadRoomsSheet() {
     const roomHeaders = ["number", "building", "apartment", "occupancy"];
     downloadExcel('Rooms', rooms, roomHeaders);
 }
+
+
 
 // Document Ready Function
 $(document).ready(function () {

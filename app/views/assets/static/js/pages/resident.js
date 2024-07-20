@@ -1,10 +1,10 @@
 // Utility Functions
-import { downloadExcel,applyBlurEffect, removeBlurEffect, showLoader, hideLoader} from "../helper/utils.js";
+import {applyBlurEffect, removeBlurEffect, showLoader, hideLoader, postDataDB, deleteDataDB, getDataDB } from "../helper/utils.js";
 
 
 let residents = [];
 
-function fetchResidents() {
+async function fetchResidents() {
     residents = [{
             id: 1,
             name: 'Khaled Tahran',

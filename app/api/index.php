@@ -26,6 +26,10 @@ function getActionFromHash($hashedAction) {
         hash('sha256', 'dorm/removeApartment') => 'dorm/removeApartment',
         hash('sha256', 'dorm/addApartment') => 'dorm/addApartment',
         hash('sha256', 'dorm/getRooms') => 'dorm/getRooms',
+        hash('sha256', 'dorm/addRoom') => 'dorm/addRoom',
+        hash('sha256', 'dorm/removeRoom') => 'dorm/removeRoom',
+
+
 
         hash('sha256', 'room/create') => 'room/create',
         hash('sha256', 'room/delete') => 'room/delete',
