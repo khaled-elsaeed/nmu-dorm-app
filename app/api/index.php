@@ -28,7 +28,7 @@ function getActionFromHash($hashedAction) {
         hash('sha256', 'dorm/getRooms') => 'dorm/getRooms',
         hash('sha256', 'dorm/addRoom') => 'dorm/addRoom',
         hash('sha256', 'dorm/removeRoom') => 'dorm/removeRoom',
-
+        hash('sha256', 'resident/createAccount') => 'resident/createAccount',
 
 
         hash('sha256', 'room/create') => 'room/create',
@@ -98,6 +98,7 @@ $entityToController = [
     'admin' => 'AdminController',
     'dorm' => 'DormController',
     'maintenance' => 'MaintenanceController',
+    'resident' => 'ResidentController',
 ];
 
 if (isset($entityToController[$entity])) {

@@ -93,7 +93,7 @@ $(document).ready(function(){
             street: {
                 required: true,
             },
-            phonenumber: {
+            phoneNumber: {
                 required: true,
                 egyptPhoneNumber: true
             },
@@ -143,7 +143,7 @@ $(document).ready(function(){
         },
         messages: {
             profilePicture: {
-                required: "Please enter your fe.",
+                required: "Please upload your picture.",
             },
             firstName: {
                 required: "Please enter your first name.",
@@ -173,7 +173,7 @@ $(document).ready(function(){
                 required: "Please enter your email address.",
                 universityEmail: "Please enter a valid email address 'firstName(followed by)studend id@nmu.edu.eg'."
             },
-            phonenumber: {
+            phoneNumber: {
                 required: "Please enter your phone number.",
                 egyptPhoneNumber: "Please enter a valid Egyptian phone number."
             },

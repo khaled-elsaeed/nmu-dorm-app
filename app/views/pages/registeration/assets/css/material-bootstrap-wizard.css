@@ -31,8 +31,13 @@
   opacity: 0;
 }
 
-body {
-  background-color: #E5E5E5;
+body{
+  background-color: #FFFFFF;
+}
+
+
+/* body {
+  background-color: #ffffff;
   color: #3C4858; }
   body.inverse {
     background: #333333; }
@@ -45,7 +50,7 @@ body {
     body.inverse .card,
     body.inverse .card .form-control {
       background-color: initial;
-      color: initial; }
+      color: initial; } */
 
 blockquote p {
   font-style: italic; }
@@ -103,7 +108,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
     top: 0;
     width: 100%;
     height: 100%;
-    background: #000000;
+    /* background: #000000; */
     opacity: .3; }
 
 .made-with-mk {

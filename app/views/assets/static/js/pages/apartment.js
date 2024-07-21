@@ -52,6 +52,7 @@ async function populateTable() {
    });
 }
 
+
 function constructTableRow(apartment) {
    const occupancyBadge = generateOccupancyBadge(apartment.roomsCount);
    const building = buildings.find( (building)=> building.id === apartment.buildingId)
@@ -68,6 +69,7 @@ function constructTableRow(apartment) {
         </tr>
     `;
 }
+
 
 function generateOccupancyBadge(occupancyStatus) {
 

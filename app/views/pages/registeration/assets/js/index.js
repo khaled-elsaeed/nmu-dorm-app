@@ -17,27 +17,27 @@ async function fetchData(url) {
     }
 }
 
-async function postData(url, payload) {
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
+// async function postData(url, payload) {
+//     try {
+//         const response = await fetch(url, {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify(payload)
+//         });
         
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
+//         if (!response.ok) {
+//             throw new Error('Network response was not ok');
+//         }
         
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('There was a problem with the POST operation:', error);
-        return null;
-    }
-}
+//         const data = await response.json();
+//         return data;
+//     } catch (error) {
+//         console.error('There was a problem with the POST operation:', error);
+//         return null;
+//     }
+// }
 
 
 /* 
@@ -239,7 +239,7 @@ async function populatePrograms(facultyId) {
     const filteredPrograms = programs.filter(program => program.faculty_id == facultyId);
 
     const programsSelect = document.getElementById("program");
-    
+    programsSelect.removeAttribute('disabled')
     programsSelect.innerHTML = "";
     try {
         
@@ -306,49 +306,22 @@ certContainer.style.display = "none";
 
 levelSelect.addEventListener("change", toggleInputs);
 
-/* 
-  Function to handle file upload 
-*/
-
-// const dropZone = document.getElementById('drop-zone-invoice');
-// const fileInput = document.getElementById('invoice_file');
-// const fileList = dropZone.querySelector('.file-list');
-
-// fileInput.addEventListener('change', () => {
-//     const files = fileInput.files;
-//     fileList.innerHTML = '';
-//     Array.from(files).forEach(file => {
-//         const listItem = document.createElement('div');
-//         listItem.textContent = file.name;
-//         fileList.appendChild(listItem);
-//     });
-// });
-
-// dropZone.addEventListener('dragover', (event) => {
-//     event.preventDefault();
-//     dropZone.classList.add('dragover');
-// });
-
-// dropZone.addEventListener('dragleave', () => {
-//     dropZone.classList.remove('dragover');
-// });
-
-// dropZone.addEventListener('drop', (event) => {
-//     event.preventDefault();
-//     dropZone.classList.remove('dragover');
-//     const files = event.dataTransfer.files;
-//     fileInput.files = files;
-//     Array.from(files).forEach(file => {
-//         const listItem = document.createElement('div');
-//         listItem.textContent = file.name;
-//         fileList.appendChild(listItem);
-//     });
-// });
 
 
-/* 
-  Function to ignore regular form submit and submit data use api (postData function)
-*/
+
+document.getElementById("profilePicture").onchange = function() {
+    const file = this.files[0];
+
+    const profileContainer = document.getElementById("profilePictureContainer");
+    profileContainer.style.backgroundImage = `url(${URL.createObjectURL(file)})`;
+};
+
+
+
+
+
+
+
 
 
 function resetForm(event) {
@@ -372,12 +345,6 @@ async function gatherFormData() {
     console.log("Form Data:", formData);
     
     return formData;
-}
-
-
-async function sendFormData(formData) {
-    const form = document.querySelector('formnew');
-    return await postData(form.action,formData)
 }
 
 function displayResponseMessage(responseType, rejectDetails) {
@@ -404,51 +371,89 @@ function displayResponseMessage(responseType, rejectDetails) {
 }
 
 
-async function fetchData(url) {
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        // Process the retrieved JSON data here
-        return data;
-    } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
-        // Handle errors gracefully here
-        return null;
-    }
+
+// Function to get the root URL of the application
+function getRootUrl() {
+    const currentUrl = window.location.href;
+    const index = currentUrl.indexOf("nmu-dorm-app");
+    const rootUrl = currentUrl.substring(0, index + "nmu-dorm-app".length);
+    return `${rootUrl}/app/api/?action=`;
 }
 
+// Hashing and Encoding Functions
+async function hashAction(action) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(action);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return btoa(hashHex);
+}
 
+function encodeData(data) {
+    const jsonString = JSON.stringify(data);
+    const encodedData = btoa(jsonString);
+    return encodeURIComponent(encodedData);
+}
+
+// Database Interaction Functions
+async function postDataDB(action, data) {
+    const encodedAction = await hashAction(action);
+    const encodedData = encodeData(data);
+    const rootUrl = getRootUrl();
+    const url = `${rootUrl}${encodedAction}`;
+    const response = await postData(url, encodedData);
+    return response;
+}
+
+// AJAX Request Function
+function ajaxRequest(method, url, data, successCallback, errorCallback) {
+    const xhr = new XMLHttpRequest();
+    xhr.open(method, url, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                const response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    successCallback(response.data || null);
+                } else {
+                    errorCallback(response.error);
+                }
+            } else {
+                errorCallback('HTTP Error: ' + xhr.status);
+            }
+        }
+    };
+    xhr.send(JSON.stringify(data));
+}
+
+// Post Data Function
+function postData(url, data) {
+    return new Promise((resolve, reject) => {
+        ajaxRequest('POST', url, data, resolve, reject);
+    });
+}
+
+// Form Submission Function
 async function submitForm(event) {
-    event.preventDefault(); 
+    event.preventDefault();
     
-    const form = document.querySelector('form'); 
+    const form = document.querySelector('form');
     
     try {
         if (form.checkValidity()) {
-            const formData = new FormData(form); 
-            const response = await fetch(form.action, { 
-                method: form.method,
-                body: formData
-            });
-            
-            if (!response.ok) {
-                throw new Error('Form submission failed');
-            }
-            
-            const responseData = await response.json();
-            displayResponseMessage(responseData.success);
-        } else {
-            const errorMessage = document.getElementById("error-message");
-            errorMessage.style.display = "block";
-        }
+            const formData = new FormData(form);
+            await postDataDB("resident/createAccount", formData);
+            displayResponseMessage(true);
+
+        } 
     } catch (error) {
-        // Handle other errors, such as network issues
-        console.error('Error submitting form:', error);
+        displayResponseMessage(false, error);
+        form.reset();
     }
 }
+
 
 const form = document.querySelector('form');
 form.addEventListener('submit', submitForm);
@@ -498,6 +503,6 @@ $(document).ready(function () {
     setTimeout(() => {
        hideLoader();
        removeBlurEffect();
-    }, 5000); // Simulate 5 seconds delay for fetching data
+    }, 1000); // Simulate 5 seconds delay for fetching data
 
  });

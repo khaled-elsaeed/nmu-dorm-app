@@ -35,23 +35,23 @@
             margin-left: 15px;
          }
 
-         #profile-picture{
+         #profilePictureContainer{
             width: 150px;
             height: 150px;
             border-radius: 50%;
-            background-image: url("assets/img/wizard-profile.jpg");
+            background-image: url("assets/img/default-avatar.png");
             background-size: cover;
 
          }
 
-         #profile-picture input{
+         #profilePictureContainer input{
             width: 150px;
             height: 150px;
             border-radius: 50%;
             cursor: pointer;
          }
          
-         #invoice_file-error{
+         #profilePicture-error{
             margin-top: 170px;
             margin-bottom: 150px;
          }
@@ -60,7 +60,7 @@
       
    </head>
    <body>
-      <div class="image-container set-full-height" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('assets/img/background.jpg')">
+      <div class="image-container set-full-height" >
                  <!--   Creative Tim Branding   -->
 
                  <div class="header-logo">
@@ -92,17 +92,10 @@
                                  <div class="tab-content"> 
                                     <div class="tab-pane" id="about">
                                        <div class="row">
-                                          <div class="col-sm-4 col-sm-offset-1">
-                                             <!-- <div class="picture-container">
-                                                <div class="picture">
-                                                   <img src="assets/img/default-avatar.png" class="picture-src" id="wizardPicturePreview" title=""/>
-                                                   <input type="file" id="wizard-picture" name="profile-picture" >
-                                                </div>
-                                                <label class="control-label"><h6>Choose Picture</h6></label>
-                                             </div>                                             -->
-                                             <div class="form-group label-floating" id="profile-picture">
-                                                <label for="invoice_file" class="upload-image"></label>
-                                                <input type="file" id="invoice_file" name="invoice_file" required>
+                                          <div class="col-sm-4 col-sm-offset-1">            
+                                             <div class="form-group label-floating" id="profilePictureContainer">
+                                                <label for="profilePicture" class="upload-image"></label>
+                                                <input type="file" id="profilePicture" name="profilePicture" required>
                                             </div>
                                           </div>
                                           <div class="col-sm-6">
@@ -250,7 +243,7 @@
                                                 </div>
                                              </div>
                                           </div>
-                                          <div class="col-sm-3">
+                                          <div class="col-sm-5">
                                              <div class="input-group">
                                                 <span class="input-group-addon">
                                                 <i class="material-icons">call</i>
@@ -287,7 +280,7 @@
                                                 </span>
                                                 <div class="form-group">
                                                    <label class="control-label">Program</label>
-                                                   <select name="program" id="program" class="form-control">
+                                                   <select name="program" id="program" class="form-control" disabled>
                                                    </select>
                                                 </div>
                                              </div>
