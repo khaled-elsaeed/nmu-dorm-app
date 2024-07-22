@@ -17,28 +17,6 @@ async function fetchData(url) {
     }
 }
 
-// async function postData(url, payload) {
-//     try {
-//         const response = await fetch(url, {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify(payload)
-//         });
-        
-//         if (!response.ok) {
-//             throw new Error('Network response was not ok');
-//         }
-        
-//         const data = await response.json();
-//         return data;
-//     } catch (error) {
-//         console.error('There was a problem with the POST operation:', error);
-//         return null;
-//     }
-// }
-
 
 /* 
   Function to fetch nationalities from json files and populate them in select
@@ -278,33 +256,39 @@ fetchPrograms();
 /* 
   Function to show and hide input of cgpa or certification  type & score depending on level selection
 */
-
 var levelSelect = document.querySelector('select[name="level"]');
 var cgpaContainer = document.getElementById('cgpaContainer');
 var certContainer = document.getElementById('certContainer');
 var cgpaInput = document.querySelector('input[name="cgpa"]');
-var certTypeSelect = document.querySelector('select[name="certificate"]');
+var certTypeSelect = document.querySelector('select[name="certificateType"]');
 var scoreInput = document.querySelector('input[name="certificateScore"]');
 
 function toggleInputs() {
     if (levelSelect.value === "0") {
+        // Hide cgpaContainer and set cgpaInput to empty
         cgpaContainer.style.display = "none";
-        cgpaInput.value = ""; 
+        cgpaInput.value = "";  // Set the value to empty
+        // Show certContainer
         certContainer.style.display = "block";
-    } else {
-        cgpaContainer.style.display = "block";
-        certContainer.style.display = "none";
+        // Ensure certTypeSelect and scoreInput values are empty
         certTypeSelect.value = ""; 
         scoreInput.value = ""; 
+    } else {
+        // Show cgpaContainer
+        cgpaContainer.style.display = "block";
+        // Hide certContainer and set certTypeSelect and scoreInput to empty
+        certContainer.style.display = "none";
+        certTypeSelect.value = "";  // Set the value to empty
+        scoreInput.value = "";  // Set the value to empty
     }
 }
 
-// Initially hide both inputs
+// Initially hide both containers and ensure input values are empty
 cgpaContainer.style.display = "none";
 certContainer.style.display = "none";
 
-
 levelSelect.addEventListener("change", toggleInputs);
+
 
 
 
@@ -329,23 +313,6 @@ function resetForm(event) {
     document.querySelector("form").reset(); 
 }
 
-async function gatherFormData() {
-    const form = document.getElementById('formnew');
-    console.log(form.data);
-    const formData = new FormData(form);
-    
-    // Handle file inputs separately
-    const fileInput = document.getElementById('invoice_file');
-    const files = fileInput.files;
-    if (files.length > 0) {
-        formData.append('invoice_file', files[0]); // Assuming you only have one file input
-    }
-
-    // Log the FormData object to the console
-    console.log("Form Data:", formData);
-    
-    return formData;
-}
 
 function displayResponseMessage(responseType, rejectDetails) {
     const error = "Sorry Service unavailable "
@@ -371,15 +338,6 @@ function displayResponseMessage(responseType, rejectDetails) {
 }
 
 
-
-// Function to get the root URL of the application
-function getRootUrl() {
-    const currentUrl = window.location.href;
-    const index = currentUrl.indexOf("nmu-dorm-app");
-    const rootUrl = currentUrl.substring(0, index + "nmu-dorm-app".length);
-    return `${rootUrl}/app/api/?action=`;
-}
-
 // Hashing and Encoding Functions
 async function hashAction(action) {
     const encoder = new TextEncoder();
@@ -390,42 +348,48 @@ async function hashAction(action) {
     return btoa(hashHex);
 }
 
-function encodeData(data) {
-    const jsonString = JSON.stringify(data);
-    const encodedData = btoa(jsonString);
-    return encodeURIComponent(encodedData);
+
+
+// Function to get the root URL of the application
+function getRootUrl() {
+    const currentUrl = window.location.href;
+    const index = currentUrl.indexOf("nmu-dorm-app");
+    const rootUrl = currentUrl.substring(0, index + "nmu-dorm-app".length);
+    return `${rootUrl}/app/api/?action=`;
 }
 
-// Database Interaction Functions
-async function postDataDB(action, data) {
+// Database Interaction Functions with Hashing
+async function postDataDB(action, formData) {
     const encodedAction = await hashAction(action);
-    const encodedData = encodeData(data);
     const rootUrl = getRootUrl();
     const url = `${rootUrl}${encodedAction}`;
-    const response = await postData(url, encodedData);
+    const response = await postData(url, formData);
     return response;
 }
 
-// AJAX Request Function
+// AJAX Request Function for FormData
 function ajaxRequest(method, url, data, successCallback, errorCallback) {
     const xhr = new XMLHttpRequest();
     xhr.open(method, url, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status >= 200 && xhr.status < 300) {
-                const response = JSON.parse(xhr.responseText);
-                if (response.success) {
-                    successCallback(response.data || null);
-                } else {
-                    errorCallback(response.error);
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        successCallback(response.data || null);
+                    } else {
+                        errorCallback(response.error);
+                    }
+                } catch (error) {
+                    errorCallback('Response parsing error: ' + error.message);
                 }
             } else {
                 errorCallback('HTTP Error: ' + xhr.status);
             }
         }
     };
-    xhr.send(JSON.stringify(data));
+    xhr.send(data); // Send FormData directly
 }
 
 // Post Data Function
@@ -438,21 +402,20 @@ function postData(url, data) {
 // Form Submission Function
 async function submitForm(event) {
     event.preventDefault();
-    
-    const form = document.querySelector('form');
-    
     try {
+        const form = document.getElementById('form');
         if (form.checkValidity()) {
             const formData = new FormData(form);
-            await postDataDB("resident/createAccount", formData);
+            await postDataDB("member/createProfile", formData);
             displayResponseMessage(true);
-
         } 
     } catch (error) {
         displayResponseMessage(false, error);
         form.reset();
     }
 }
+
+
 
 
 const form = document.querySelector('form');

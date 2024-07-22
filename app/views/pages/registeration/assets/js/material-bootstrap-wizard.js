@@ -137,7 +137,7 @@ $(document).ready(function(){
             },
             oldResident: {
                 required: true,
-            },invoice_file: {
+            },invoice: {
                 required:true,
             }
         },
@@ -213,7 +213,7 @@ $(document).ready(function(){
             },
             oldResident: {
                 required: "Please indicate whether you are an old resident or not.",
-            },invoice_file: {
+            },invoice: {
                 required: "Please indicate whether you are an old resident or not.",
             }
         }
@@ -322,7 +322,7 @@ $(document).ready(function(){
             document.getElementById('reviewStudentId').value = document.querySelector('input[name="studentId"]').value;
             document.getElementById('reviewLevel').value = document.querySelector('select[name="level"]').selectedOptions[0].text;
             document.getElementById('reviewCgpa').value = document.querySelector('input[name="cgpa"]').value;
-            document.getElementById('reviewCertificate').value = document.querySelector('select[name="certificate"]').selectedOptions[0].text;
+            document.getElementById('reviewCertificate').value = document.querySelector('select[name="certificateType"]').selectedOptions[0].text;
             document.getElementById('reviewCertificateScore').value = document.querySelector('input[name="certificateScore"]').value;
             document.getElementById('reviewParentFirstName').value = document.querySelector('input[name="parentFirstName"]').value;
             document.getElementById('reviewParentLastName').value = document.querySelector('input[name="parentLastName"]').value;
@@ -332,7 +332,7 @@ $(document).ready(function(){
             document.getElementById('reviewOldResident').value = document.querySelector('select[name="oldResident"]').selectedOptions[0].text;
 
             // For the invoice file, if you want to show the file name
-            var invoiceFileInput = document.querySelector('input[name="invoice_file"]');
+            var invoiceFileInput = document.querySelector('input[name="invoice"]');
             if (invoiceFileInput.files.length > 0) {
                 document.getElementById('reviewInvoiceFile').value = invoiceFileInput.files[0].name;
             } else {

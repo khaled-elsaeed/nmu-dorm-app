@@ -264,35 +264,35 @@ private function getCurrentRoomCount($apartmentId)
     }
 
 
-    public function calculateOccupancyRate($entityType, $entityId) {
-        try {
-            switch ($entityType) {
-                case 'apartment':
-                    $existingCount = $this->getExistingRoomsCount($entityId);
-                    $maxCapacity = $this->getMaxRoomCapacity($entityId);
-                    $entityName = 'Apartment';
-                    break;
-                case 'building':
-                    $existingCount = $this->getExistingApartmentsCount($entityId);
-                    $maxCapacity = $this->getMaxApartmentCapacity($entityId);
-                    $entityName = 'Building';
-                    break;
-                default:
-                    return errorResponse("Invalid entity type.");
-            }
+    // public function calculateOccupancyRate($entityType, $entityId) {
+    //     try {
+    //         switch ($entityType) {
+    //             case 'apartment':
+    //                 $existingCount = $this->getExistingRoomsCount($entityId);
+    //                 $maxCapacity = $this->getMaxRoomCapacity($entityId);
+    //                 $entityName = 'Apartment';
+    //                 break;
+    //             case 'building':
+    //                 $existingCount = $this->getExistingApartmentsCount($entityId);
+    //                 $maxCapacity = $this->getMaxApartmentCapacity($entityId);
+    //                 $entityName = 'Building';
+    //                 break;
+    //             default:
+    //                 return errorResponse("Invalid entity type.");
+    //         }
 
-            if ($maxCapacity === false) {
-                return errorResponse("Failed to retrieve maximum capacity for this $entityName.");
-            }
+    //         if ($maxCapacity === false) {
+    //             return errorResponse("Failed to retrieve maximum capacity for this $entityName.");
+    //         }
 
-            $occupancyRate = ($existingCount / $maxCapacity) * 100;
+    //         $occupancyRate = ($existingCount / $maxCapacity) * 100;
 
-            return successResponse("Occupancy rate for the $entityName: $occupancyRate%");
-        } catch (PDOException $e) {
-            logError($e->getMessage());
-            return errorResponse("An error occurred while calculating occupancy rate for the $entityName. Please try again later.");
-        }
-    }
+    //         return successResponse("Occupancy rate for the $entityName: $occupancyRate%");
+    //     } catch (PDOException $e) {
+    //         logError($e->getMessage());
+    //         return errorResponse("An error occurred while calculating occupancy rate for the $entityName. Please try again later.");
+    //     }
+    // }
 
 }
 ?>

@@ -55,7 +55,63 @@
             margin-top: 170px;
             margin-bottom: 150px;
          }
+         /* Style select dropdown container */
+    .responseContainer {
+    position: absolute; /* Assuming you want it centered within the parent */
+    width: 80%;
+    text-align: center;
+    border-radius: 10px;
+    padding: 40px;
+    overflow: hidden;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    }
+
+
+
+
+    .responseLogo img {
+        max-width: 40%; /* Set the maximum width of the image to 100% of its container */
+        height: auto; /* Maintain aspect ratio */
+        margin-top: 80px;
+        margin-bottom: 20px;
+    }
     
+
+    .responseMessage { /* Renamed the message class */
+    font-size: 28px;
+    color: #333;
+            margin-bottom: 30px;
+
+    
+
+    }
+
+    .responseContact { /* Renamed the contact class */
+    font-style: italic;
+    color: #666;
+        margin-bottom: 30px;
+
+
+    }
+
+    /* Button style */
+    .returnSiteBtn { /* Renamed the button class */
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #921922;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    }
+
+    .returnSiteBtn:hover {
+    background-color: #671218; /* Darker shade of blue on hover */
+    color: #FFFFFF;
+    }
+
       </style>
       
    </head>
@@ -77,7 +133,7 @@
                         <!--      Wizard container        -->
                         <div class="wizard-container" id="wizard-container">
                            <div class="card wizard-card" data-color="main-color" id="wizardProfile">
-                              <form id="form" action="../../handlers/index.php?action=createmember" method="POST" enctype="multipart/form-data">
+                              <form id="form" method="POST" enctype="multipart/form-data">
                                  <div class="wizard-navigation">
                                     <ul>
                                        <li><a href="#about" data-toggle="tab">About</a></li>
@@ -95,7 +151,7 @@
                                           <div class="col-sm-4 col-sm-offset-1">            
                                              <div class="form-group label-floating" id="profilePictureContainer">
                                                 <label for="profilePicture" class="upload-image"></label>
-                                                <input type="file" id="profilePicture" name="profilePicture" required>
+                                                <input type="file" id="profilePicture" name="profilePicture">
                                             </div>
                                           </div>
                                           <div class="col-sm-6">
@@ -320,8 +376,8 @@
                                              <div class="col-sm-7">
                                                 <div class="form-group label-floating">
                                                    <label class="control-label">Certificate Type</label>
-                                                   <select name="certificate" class="form-control">
-                                                      <option disabled="" selected=""></option>
+                                                   <select name="certificateType" class="form-control">
+                                                      <option value="" selected disabled>Select Certificate</option>
                                                       <option value="EgyptianCert">Egyptian Secondary Education Certificate (Thanaweya Amma)</option>
                                                       <option value="other">Secondary Education Equivalency Certificate</option>
                                                    </select>
@@ -425,8 +481,8 @@
                                        </div>
                                        <div class="col-sm-12">
                                           <div class="input-field">
-                                             <input type="file" id="invoice_file" name="invoice_file" required>
-                                             <label for="invoice_file">Upload Invoice</label>
+                                             <input type="file" id="invoice" name="invoice" required>
+                                             <label for="invoice">Upload Invoice</label>
                                          </div>
                                        </div>
                                     </div>
