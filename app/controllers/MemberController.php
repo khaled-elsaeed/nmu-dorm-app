@@ -20,6 +20,10 @@ class MemberController {
                 return $this->logoutMember();
             case 'member/createProfile':
                 return $this->createProfile($data);
+            case 'member/getAllMembers':
+                return $this->getAllMembers();
+            case 'member/getMemberInfo':
+                return $this->getMemberInfo($data);
             default:
                 // Unknown action
                 return errorResponse('Invalid Action');
@@ -75,6 +79,23 @@ class MemberController {
         }    
     }
 
+    public function getAllMembers(){
+        $result = $this->memberModel->getAllMembers();
+        if ($result['success'] === true) {
+            return successResponse($result['data']);
+        } else {
+            return errorResponse($result['error']);
+        }    
+    }
+
+    public function getMemberInfo($data){
+        $result = $this->memberModel->getMemberInfo($data['memberId']);
+        if ($result['success'] === true) {
+            return successResponse($result['data']);
+        } else {
+            return errorResponse($result['error']);
+        }    
+    }
 
 }
 

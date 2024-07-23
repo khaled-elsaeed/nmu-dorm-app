@@ -13,131 +13,131 @@
       "data":[
         {
           "faculty_id": 1,
-          "program_name_en": "Entrepreneurship & Innovation Program"
+          "program_name_en": "Entrepreneurship & Innovation"
         },
         {
           "faculty_id": 1,
-          "program_name_en": "Management Program"
+          "program_name_en": "Management"
         },
         {
           "faculty_id": 1,
-          "program_name_en": "Finance & Investment Program"
+          "program_name_en": "Finance & Investment"
         },
         {
           "faculty_id": 1,
-          "program_name_en": "Accounting & Information Systems Program"
+          "program_name_en": "Accounting & Information Systems"
         },
         {
           "faculty_id": 1,
-          "program_name_en": "Marketing Program"
+          "program_name_en": "Marketing"
         },
         {
           "faculty_id": 1,
-          "program_name_en": "Logistics & Supply-Chain Management Program"
+          "program_name_en": "Logistics & Supply-Chain Management"
         },
         {
           "faculty_id": 1,
-          "program_name_en": "Economics & Political Sciences Program"
+          "program_name_en": "Economics & Political Sciences"
         },
         {
           "faculty_id": 2,
-          "program_name_en": "Textile Material Science & Engineering Program"
+          "program_name_en": "Textile Material Science & Engineering"
         },
         {
           "faculty_id": 2,
-          "program_name_en": "Textile Polymer & Color Chemistry Engineering Program"
+          "program_name_en": "Textile Polymer & Color Chemistry Engineering"
         },
         {
           "faculty_id": 2,
-          "program_name_en": "Textile & Apparel Management & Merchandising Program"
+          "program_name_en": "Textile & Apparel Management & Merchandising"
         },
         {
           "faculty_id": 2,
-          "program_name_en": "Textile & Fashion Design Program"
+          "program_name_en": "Textile & Fashion Design"
         },
         {
           "faculty_id": 3,
-          "program_name_en": "Media Engineering & Technology Program"
+          "program_name_en": "Media Engineering & Technology"
         },
         {
           "faculty_id": 3,
-          "program_name_en": "Engineering & Technology Implementation of Civil Works Program"
+          "program_name_en": "Engineering & Technology Implementation of Civil Works"
         },
         {
           "faculty_id": 3,
-          "program_name_en": "Product Development Engineering Program"
+          "program_name_en": "Product Development Engineering"
         },
         {
           "faculty_id": 3,
-          "program_name_en": "Aeronautical & Aerospace Engineering Program"
+          "program_name_en": "Aeronautical & Aerospace Engineering"
         },
         {
           "faculty_id": 3,
-          "program_name_en": "Petroleum & Gas Engineering Program"
+          "program_name_en": "Petroleum & Gas Engineering"
         },
         {
           "faculty_id": 3,
-          "program_name_en": "Environmental Architecture & Technology Program"
+          "program_name_en": "Environmental Architecture & Technology"
         },
         {
           "faculty_id": 3,
-          "program_name_en": "Mechatronics Engineering Program"
+          "program_name_en": "Mechatronics Engineering"
         },
         {
           "faculty_id": 3,
-          "program_name_en": "Energy Engineering Program"
+          "program_name_en": "Energy Engineering"
         },
         {
           "faculty_id": 3,
-          "program_name_en": "Biomedical Engineering Program"
+          "program_name_en": "Biomedical Engineering"
         },
         {
           "faculty_id": 4,
-          "program_name_en": "Computer Engineering Program"
+          "program_name_en": "Computer Engineering"
         },
         {
           "faculty_id": 4,
-          "program_name_en": "Artificial Intelligence Engineering Program"
+          "program_name_en": "Artificial Intelligence Engineering"
         },
         {
           "faculty_id": 4,
-          "program_name_en": "Computer Science Program"
+          "program_name_en": "Computer Science"
         },
         {
           "faculty_id": 4,
-          "program_name_en": "Artificial Intelligence Science Program"
+          "program_name_en": "Artificial Intelligence Science"
         },
         {
           "faculty_id": 4,
-          "program_name_en": "Biomedical Informatics Program"
+          "program_name_en": "Biomedical Informatics"
         },
         {
           "faculty_id": 5,
-          "program_name_en": "Industrial Chemistry Program"
+          "program_name_en": "Industrial Chemistry"
         },
         {
           "faculty_id": 5,
-          "program_name_en": "Molecular Biology Program"
+          "program_name_en": "Molecular Biology"
         },
         {
           "faculty_id": 5,
-          "program_name_en": "Forensic Science Program"
+          "program_name_en": "Forensic Science"
         },
         {
           "faculty_id": 5,
-          "program_name_en": "Molecular Biotechnology Program"
+          "program_name_en": "Molecular Biotechnology"
         },
         {
           "faculty_id": 6,
-          "program_name_en": "Medicine & Surgery Program"
+          "program_name_en": "Medicine & Surgery"
         },
         {
           "faculty_id": 7,
-          "program_name_en": "Dentistry Program"
+          "program_name_en": "Dentistry"
         },
         {
           "faculty_id": 8,
-          "program_name_en": "Doctor Of Pharmacy (PharmD) Program"
+          "program_name_en": "Doctor Of Pharmacy (PharmD)"
         },
         {
           "faculty_id": 9,
@@ -145,43 +145,43 @@
         },
         {
           "faculty_id": 10,
-          "program_name_en": "Medical Laboratory Technology Program"
+          "program_name_en": "Medical Laboratory Technology"
         },
         {
           "faculty_id": 10,
-          "program_name_en": "Technology of Radiology & Medical Imaging Program"
+          "program_name_en": "Technology of Radiology & Medical Imaging"
         },
         {
           "faculty_id": 10,
-          "program_name_en": "Technology of Prosthetic Dentistry Program"
+          "program_name_en": "Technology of Prosthetic Dentistry"
         },
         {
           "faculty_id": 10,
-          "program_name_en": "Technology of Anesthesia & Intensive Care Program"
+          "program_name_en": "Technology of Anesthesia & Intensive Care"
         },
         {
           "faculty_id": 10,
-          "program_name_en": "Technology of Respiratory Therapy Program"
+          "program_name_en": "Technology of Respiratory Therapy"
         },
         {
           "faculty_id": 10,
-          "program_name_en": "Technology of Prosthetic & Orthotic Devices Program"
+          "program_name_en": "Technology of Prosthetic & Orthotic Devices"
         },
         {
           "faculty_id": 10,
-          "program_name_en": "Occupational Therapy Program"
+          "program_name_en": "Occupational Therapy"
         },
         {
           "faculty_id": 10,
-          "program_name_en": "Technology of Optics Program"
+          "program_name_en": "Technology of Optics"
         },
         {
           "faculty_id": 11,
-          "program_name_en": "Nursing Science Program"
+          "program_name_en": "Nursing Science"
         },
         {
           "faculty_id": 12,
-          "program_name_en": "Law Program"
+          "program_name_en": "Law"
         }
       ]
       

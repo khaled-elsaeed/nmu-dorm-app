@@ -1,46 +1,18 @@
-import {applyBlurEffect, removeBlurEffect, showLoader, hideLoader} from "../helper/utils.js";
+import {applyBlurEffect, removeBlurEffect, showLoader, hideLoader, getDataDB, postDataDB} from "../helper/utils.js";
 
 let residentInfo = [];
 
-function fetchResidentInfo() {
-    residentInfo = {
-        firstName: "John",
-        lastName: "Doe",
-        gender: "male",
-        residentId: "123456",
-        score: "90",
-        moveInDate: "2024-05-31",
-        email: "john@example.com",
-        password: "password",
-        lastLogin: "2024-05-30T15:00",
-        universityEmail: "john.doe@university.edu",
-        mobileNumber: "1234567890",
-        birthdate: "1990-01-01",
-        governorate: "Some Governorate",
-        city: "Some City",
-        street: "123 Main Street",
-        additionalInfo: "Additional info goes here",
-        faculty: "Faculty of Engineering",
-        program: "Computer Science",
-        level: "Undergraduate",
-        cgpa: "3.8",
-        certifificate: "Certification Name",
-        certifificateScore: "95",
-        relation: "Parent",
-        parentFirstName: "Jane",
-        parentLastName: "Doe",
-        parentEmail: "jane@example.com",
-        parentPhone: "9876543210",
-        emergencyFirstName: "Emergency",
-        emergencyLastName: "Contact",
-        emergencyRelation: "Friend",
-        emergencyPhone: "5555555555"
-    };
+async function fetchResidentInfo(memberId) {
+    residentInfo = await postDataDB('member/getMemberInfo',{memberId : memberId});
+    console.log(residentInfo);
+    await populateForms();
 }
 
-function populateForms(residentInfo) {
+async function populateForms() {
+    document.getElementById('profilePicture').src = "/nmu-dorm-app/app/storage/uploads/"+residentInfo.profilePicturePath;
     document.getElementById('firstName').value = residentInfo.firstName;
     document.getElementById('lastName').value = residentInfo.lastName;
+    document.getElementById('userName').innerText = residentInfo.userName;
     document.getElementById('gender').value = residentInfo.gender;
     document.getElementById('residentId').value = residentInfo.residentId;
     document.getElementById('score').value = residentInfo.score;
@@ -54,7 +26,6 @@ function populateForms(residentInfo) {
     document.getElementById('governorate').value = residentInfo.governorate;
     document.getElementById('city').value = residentInfo.city;
     document.getElementById('street').value = residentInfo.street;
-    document.getElementById('additionalInfo').value = residentInfo.additionalInfo;
     document.getElementById('faculty').value = residentInfo.faculty;
     document.getElementById('program').value = residentInfo.program;
     document.getElementById('level').value = residentInfo.level;
@@ -66,38 +37,32 @@ function populateForms(residentInfo) {
     document.getElementById('parentLastName').value = residentInfo.parentLastName;
     document.getElementById('parentEmail').value = residentInfo.parentEmail;
     document.getElementById('parentPhone').value = residentInfo.parentPhone;
-    document.getElementById('emergencyFirstName').value = residentInfo.emergencyFirstName;
-    document.getElementById('emergencyLastName').value = residentInfo.emergencyLastName;
-    document.getElementById('emergencyRelation').value = residentInfo.emergencyRelation;
-    document.getElementById('emergencyPhone').value = residentInfo.emergencyPhone;
+    // document.getElementById('emergencyFirstName').value = residentInfo.emergencyFirstName;
+    // document.getElementById('emergencyLastName').value = residentInfo.emergencyLastName;
+    // document.getElementById('emergencyRelation').value = residentInfo.emergencyRelation;
+    // document.getElementById('emergencyPhone').value = residentInfo.emergencyPhone;
 }
 
 // Document Ready Function
 $(document).ready(function () {
     applyBlurEffect();
     showLoader();
-
     // Simulate fetching data after a delay
-    setTimeout(() => {
-        ExtratResidentIdFromUrl();
-        fetchResidentInfo();
-        populateForms(residentInfo);
+    setTimeout(async () => {
+        const memberId = await ExtratResidentIdFromUrl();
+        await fetchResidentInfo(memberId);
         hideLoader();
         removeBlurEffect();
     }, 1000); // Simulate 3 seconds delay for fetching data
-
-    // Uncomment and define these functions if needed
-    // $(document).on('click', '.more-info-btn', residentMoreInfo);
-    // $('.csv-btn').on('click', downloadResidentsSheet);
 });
 
 
-function ExtratResidentIdFromUrl() {
-    const fullURL = window.location.href;
+async function ExtratResidentIdFromUrl() {
+    // const fullURL = window.location.href;
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const id = urlParams.get('id');
-    console.log('ID:', id);
+    return id;
 }
 
 

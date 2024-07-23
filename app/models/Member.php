@@ -240,50 +240,35 @@ function generatePassword($length = 12) {
         }
     }
 
-    public function getAllResident() {
+    public function getAllMembers() {
         try {
             $conn = $this->db->getConnection();
-            
-            // Define the SQL query
-            $sql = "SELECT
-                r.score,
-                acc.email,
-                acc.username,
-                acc.profilePicturePath,
-                fac.faculty,
-                fac.program,
-                fac.level,
-                rm.number
-            FROM
-                residents AS r
-            INNER JOIN
-                member AS m ON r.memberId = m.id
-            INNER JOIN
-                account AS acc ON m.accountId = acc.id
-            INNER JOIN
-                facultyinfo AS fac ON m.id = fac.memberId
-            INNER JOIN
-                reservations AS res ON r.id = res.residentId
-            INNER JOIN
-                rooms AS rm ON res.roomId = rm.id";
-            
-            // Prepare the SQL statement
+            $sql = "SELECT r.id, r.score, acc.email, acc.username, acc.profilePicturePath, fac.faculty, fac.program, fac.level, rm.number AS roomNumber, ap.number AS apartmentNumber, bul.number AS buildingNumber FROM residents AS r INNER JOIN member AS m ON r.memberId = m.id INNER JOIN account AS acc ON m.accountId = acc.id INNER JOIN facultyinfo AS fac ON m.id = fac.memberId INNER JOIN reservations AS res ON r.id = res.residentId INNER JOIN rooms AS rm ON res.roomId = rm.id INNER JOIN apartments AS ap ON ap.id = rm.apartmentId INNER JOIN buildings AS bul ON bul.id = ap.buildingId";
             $stmt = $conn->prepare($sql);
-            
-            // Execute the statement
             $stmt->execute();
-            
-            // Fetch all results
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
             return successResponse($results);
-    
         } catch (PDOException $e) {
             logError($e->getMessage());
-            return errorResponse("Registration failed. Please try again later.");
+            return errorResponse("Failed to retrieve members. Please try again later.");
         }
     }
-    
+
+    public function getMemberInfo($memberId) {
+        try {
+            logError($memberId);
+            $conn = $this->db->getConnection();
+            $sql = "SELECT r.id AS residentId, a.firstName, a.lastName,a.userName, a.email, a.hashedPassword AS password, a.lastLogin,a.profilePicturePath, pi.gender, r.score, pi.birthDate AS birthdate, ai.governorate, ai.city, ai.street, pi.universityEmail, pi.phoneNumber AS mobileNumber, fi.faculty, fi.program, fi.level, fi.cgpa, fi.certificateType AS certificate, fi.certificateScore, p.firstName AS parentFirstName, p.lastName AS parentLastName, p.phoneNumber AS parentPhone, p.phoneNumber AS parentPhoneNumber, NULL AS additionalInfo FROM residents r JOIN member m ON r.memberId = m.id JOIN account a ON m.accountId = a.id JOIN addressinfo ai ON ai.memberId = m.id JOIN facultyinfo fi ON fi.memberId = m.id JOIN personalinfo pi ON pi.memberId = m.id LEFT JOIN parentinfo p ON p.memberId = m.id WHERE r.id = :residentId";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':residentId', $memberId);
+            $stmt->execute();
+            $results = $stmt->fetch(PDO::FETCH_ASSOC);
+            return successResponse($results);
+        } catch (PDOException $e) {
+            logError($e->getMessage());
+            return errorResponse("Failed to retrieve member details. Please try again later.");
+        }
+    }
 }
 
 ?>

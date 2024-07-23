@@ -130,43 +130,24 @@
          <div id="main">
             <div class="container d-flex justify-content-end">
 
-               <div class="theme-toggle d-flex gap-2  align-items-center mt-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--system-uicons" width="20" height="20" preserveAspectRatio="xMidYMid meet" viewBox="0 0 21 21">
-                     <g fill="none" fill-rule="evenodd" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M10.5 14.5c2.219 0 4-1.763 4-3.982a4.003 4.003 0 0 0-4-4.018c-2.219 0-4 1.781-4 4c0 2.219 1.781 4 4 4zM4.136 4.136L5.55 5.55m9.9 9.9l1.414 1.414M1.5 10.5h2m14 0h2M4.135 16.863L5.55 15.45m9.899-9.9l1.414-1.415M10.5 19.5v-2m0-14v-2" opacity=".3"></path>
-                        <g transform="translate(-210 -1)">
-                           <path d="M220.5 2.5v2m6.5.5l-1.5 1.5"></path>
-                           <circle cx="220.5" cy="11.5" r="4"></circle>
-                           <path d="m214 5l1.5 1.5m5 14v-2m6.5-.5l-1.5-1.5M214 18l1.5-1.5m-4-5h2m14 0h2"></path>
-                        </g>
-                     </g>
-                  </svg>
-                  <div class="form-check form-switch fs-6">
-                     <input class="form-check-input  me-0" type="checkbox" id="toggle-dark" style="cursor: pointer">
-                     <label class="form-check-label"></label>
-                  </div>
-                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--mdi" width="20" height="20" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
-                     <path fill="currentColor" d="m17.75 4.09l-2.53 1.94l.91 3.06l-2.63-1.81l-2.63 1.81l.91-3.06l-2.53-1.94L12.44 4l1.06-3l1.06 3l3.19.09m3.5 6.91l-1.64 1.25l.59 1.98l-1.7-1.17l-1.7 1.17l.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95l2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85c-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14c.4-.4.82-.76 1.27-1.08c.75-.53 1.93.36 1.85 1.19c-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82c-2.81 3.14-2.7 7.96.31 10.98c3.02 3.01 7.84 3.12 10.98.31Z">
-                     </path>
-                  </svg>
-               </div>
+              
                <!-- Profile dropdown menu -->
                <div class="dropdown">
-                  <a class="btn dropdown-toggle" href="#" role="button" id="profileDropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                     <div class="d-flex align-items-center">
-                        <div class="rounded-circle overflow-hidden me-2 border border-primary" style="width: 40px; height: 40px;">
-                           <img src="../assets/compiled/png/student.png" alt="Profile Picture" class="img-fluid" style="object-fit: cover; width: 100%; height: 100%;">
-                        </div>
-                        <span class="d-none d-md-inline-block fs-6" >Shaymaa</span>
+               <a class="btn dropdown-toggle" href="#" role="button" id="profileDropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                  <div class="d-flex align-items-center">
+                     <div class="rounded-circle overflow-hidden me-2 border border-primary" style="width: 40px; height: 40px;">
+                        <img src="../assets/compiled/png/student.png" alt="Profile Picture" class="img-fluid" style="object-fit: cover; width: 100%; height: 100%;">
                      </div>
-                  </a>
-                  <div class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdownMenuLink">
-                     <a class="dropdown-item" href="#"><i class="fas fa-user-circle me-2"></i> <span >Profile</span></a>
-                     <a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> <span >Settings</span></a>
-                     <hr class="dropdown-divider">
-                     <a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i> <span >Logout</span></a>
+                     <span class="d-none d-md-inline-block fs-6" >Shaymaa</span>
                   </div>
+               </a>
+               <div class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdownMenuLink">
+                  <a class="dropdown-item" href="#"><i class="fas fa-user-circle me-2"></i> <span >Profile</span></a>
+                  <a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> <span >Settings</span></a>
+                  <hr class="dropdown-divider">
+                  <a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i> <span >Logout</span></a>
                </div>
+            </div>
             </div>
             <header class="mb-3">
                <a href="#" class="burger-btn d-block d-xl-none">
@@ -205,10 +186,9 @@
                            <div class="card-body">
                               <div class="d-flex justify-content-center align-items-center flex-column">
                                  <div class="avatar avatar-2xl">
-                                    <img src="../assets/compiled/jpg/istockphoto-597958694-612x612.jpg" alt="Avatar">
+                                    <img id="profilePicture" src="../assets/compiled/jpg/istockphoto-597958694-612x612.jpg" alt="Avatar">
                                  </div>
-                                 <h3 class="mt-3">John Doe</h3>
-                                 <p class="text-small">Junior Software Engineer</p>
+                                 <h3 id="userName" class="mt-3">John Doe</h3>
                               </div>
                            </div>
                         </div>
@@ -223,31 +203,31 @@
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="firstName" class="form-label">First Name</label>
-                                       <input type="text" name="firstName" id="firstName" class="form-control">
+                                       <input type="text" name="firstName" id="firstName" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="lastName" class="form-label">Last Name</label>
-                                       <input type="text" name="lastName" id="lastName" class="form-control">
+                                       <input type="text" name="lastName" id="lastName" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="residentId" class="form-label">Resident ID</label>
-                                       <input type="text" name="residentId" id="residentId" class="form-control">
+                                       <input type="text" name="residentId" id="residentId" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="score" class="form-label">Score</label>
-                                       <input type="text" name="score" id="score" class="form-control">
+                                       <input type="text" name="score" id="score" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="moveInDate" class="form-label">Move-in Date</label>
-                                       <input type="date" name="moveInDate" id="moveInDate" class="form-control">
+                                       <input type="date" name="moveInDate" id="moveInDate" class="form-control" readonly>
                                     </div>
                                  </div>
                               </form>
@@ -267,13 +247,13 @@
                                     <div class="col-md-6">
                                        <div class="form-group">
                                           <label for="email" class="form-label">Email</label>
-                                          <input type="email" name="email" id="email" class="form-control">
+                                          <input type="email" name="email" id="email" class="form-control" readonly>
                                        </div>
                                     </div>
                                     <div class="col-md-6">
                                        <div class="form-group">
                                           <label for="password" class="form-label">Password</label>
-                                          <input type="password" name="password" id="password" class="form-control">
+                                          <input type="password" name="password" id="password" class="form-control" readonly>
                                        </div>
                                     </div>
                                  </div>
@@ -281,7 +261,7 @@
                                     <div class="col-md-6">
                                        <div class="form-group">
                                           <label for="lastLogin" class="form-label">Last Login</label>
-                                          <input type="datetime-local" name="lastLogin" id="lastLogin" class="form-control">
+                                          <input type="datetime-local" name="lastLogin" id="lastLogin" class="form-control" readonly>
                                        </div>
                                     </div>
                                  </div>
@@ -299,25 +279,25 @@
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="universityEmail" class="form-label">University Email</label>
-                                       <input type="email" name="universityEmail" id="universityEmail" class="form-control">
+                                       <input type="email" name="universityEmail" id="universityEmail" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="mobileNumber" class="form-label">Mobile Number</label>
-                                       <input type="tel" name="mobileNumber" id="mobileNumber" class="form-control">
+                                       <input type="tel" name="mobileNumber" id="mobileNumber" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="birthdate" class="form-label">Birthdate</label>
-                                       <input type="date" name="birthdate" id="birthdate" class="form-control">
+                                       <input type="date" name="birthdate" id="birthdate" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="gender" class="form-label">Gender</label>
-                                       <select name="gender" id="gender" class="form-control">
+                                       <select name="gender" id="gender" class="form-control" readonly>
                                           <option value="male">Male</option>
                                           <option value="female">Female</option>
                                        </select>
@@ -339,27 +319,22 @@
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="governorate" class="form-label">Governorate</label>
-                                       <input type="text" name="governorate" id="governorate" class="form-control">
+                                       <input type="text" name="governorate" id="governorate" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="city" class="form-label">City</label>
-                                       <input type="text" name="city" id="city" class="form-control">
+                                       <input type="text" name="city" id="city" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="street" class="form-label">Street</label>
-                                       <input type="text" name="street" id="street" class="form-control">
+                                       <input type="text" name="street" id="street" class="form-control" readonly>
                                     </div>
                                  </div>
-                                 <div class="col-sm-4">
-                                    <div class="form-group">
-                                       <label for="additionalInfo" class="form-label">Additional Info</label>
-                                       <textarea name="additionalInfo" id="additionalInfo" class="form-control"></textarea>
-                                    </div>
-                                 </div>
+
                               </form>
                            </div>
                         </div>
@@ -374,37 +349,37 @@
                                  <div class="col-sm-6">
                                     <div class="form-group">
                                        <label for="faculty" class="form-label">Faculty</label>
-                                       <input type="text" name="faculty" id="faculty" class="form-control">
+                                       <input type="text" name="faculty" id="faculty" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="program" class="form-label">Program</label>
-                                       <input type="text" name="program" id="program" class="form-control">
+                                       <input type="text" name="program" id="program" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="level" class="form-label">Level</label>
-                                       <input type="text" name="level" id="level" class="form-control">
+                                       <input type="text" name="level" id="level" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="cgpa" class="form-label">CGPA</label>
-                                       <input type="text" name="cgpa" id="cgpa" class="form-control">
+                                       <input type="text" name="cgpa" id="cgpa" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="certifificate" class="form-label">Certifificate</label>
-                                       <input type="email" name="certifificate" id="certifificate" class="form-control">
+                                       <input type="email" name="certifificate" id="certifificate" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="certifificateScore" class="form-label">Certifificate Score</label>
-                                       <input type="tel" name="certifificateScore" id="certifificateScore" class="form-control">
+                                       <input type="tel" name="certifificateScore" id="certifificateScore" class="form-control" readonly>
                                     </div>
                                  </div>
                               </form>
@@ -423,31 +398,31 @@
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="relation" class="form-label">Relation</label>
-                                       <input type="text" name="relation" id="relation" class="form-control">
+                                       <input type="text" name="relation" id="relation" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="parentFirstName" class="form-label">Parent's First Name</label>
-                                       <input type="text" name="parentFirstName" id="parentFirstName" class="form-control">
+                                       <input type="text" name="parentFirstName" id="parentFirstName" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="parentLastName" class="form-label">Parent's Last Name</label>
-                                       <input type="text" name="parentLastName" id="parentLastName" class="form-control">
+                                       <input type="text" name="parentLastName" id="parentLastName" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="parentEmail" class="form-label">Parent's Email</label>
-                                       <input type="email" name="parentEmail" id="parentEmail" class="form-control">
+                                       <input type="email" name="parentEmail" id="parentEmail" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="parentPhone" class="form-label">Parent's Phone</label>
-                                       <input type="tel" name="parentPhone" id="parentPhone" class="form-control">
+                                       <input type="tel" name="parentPhone" id="parentPhone" class="form-control" readonly>
                                     </div>
                                  </div>
                               </form>
@@ -464,25 +439,25 @@
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="emergencyFirstName" class="form-label">Emergency First Name</label>
-                                       <input type="text" name="emergencyFirstName" id="emergencyFirstName" class="form-control">
+                                       <input type="text" name="emergencyFirstName" id="emergencyFirstName" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="emergencyLastName" class="form-label">Emergency Last Name</label>
-                                       <input type="text" name="emergencyLastName" id="emergencyLastName" class="form-control">
+                                       <input type="text" name="emergencyLastName" id="emergencyLastName" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="emergencyRelation" class="form-label">Emergency Relation</label>
-                                       <input type="text" name="emergencyRelation" id="emergencyRelation" class="form-control">
+                                       <input type="text" name="emergencyRelation" id="emergencyRelation" class="form-control" readonly>
                                     </div>
                                  </div>
                                  <div class="col-sm-4">
                                     <div class="form-group">
                                        <label for="emergencyPhone" class="form-label">Emergency Phone</label>
-                                       <input type="tel" name="emergencyPhone" id="emergencyPhone" class="form-control">
+                                       <input type="tel" name="emergencyPhone" id="emergencyPhone" class="form-control" readonly>
                                     </div>
                                  </div>
                               </form>
