@@ -20,6 +20,10 @@ class ReservationController {
                 return $this->addNewCriteria($data);
             case 'reservation/deleteCriteria';
                 return $this->deleteCriteria($data);
+            case 'reservation/getReservations';
+                return $this->getReservations();
+            case 'reservation/reservationProcess';
+                return $this->reservationProcess();
             default:
                 // Unknown action
                 return errorResponse('Invalid Action');
@@ -78,6 +82,24 @@ class ReservationController {
             logError($e->getMessage());
             return errorResponse("An unexpected error occurred. Please try again later.");
         }
+    }
+
+    public function getReservations() {
+        $result = $this->ReservationModel->getReservations();
+        if ($result['success'] === true) {
+            return successResponse($result['data']);
+        } else {
+            return errorResponse($result['error']);
+        }    
+    }
+
+    public function reservationProcess() {
+        $result = $this->ReservationModel->reservationProcess();
+        if ($result['success'] === true) {
+            return successResponse();
+        } else {
+            return errorResponse($result['error']);
+        }    
     }
     
 

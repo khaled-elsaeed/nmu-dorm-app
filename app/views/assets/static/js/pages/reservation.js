@@ -1,46 +1,22 @@
 // Utility Functions
-import {applyBlurEffect, removeBlurEffect, showLoader, hideLoader } from "../helper/utils.js";
+import { confirmAction, handleFailure, handleSuccess, applyBlurEffect, removeBlurEffect, showLoader, hideLoader, postDataDB, deleteDataDB, getDataDB, updateDataDB } from "../helper/utils.js";
 
 // Sample Data Array
-const cardsData = [
-    {
-        personId: "12345",
-        bedroomId: "A-101",
-        residentScore: 35,
-        time: "March 18th, 2024, at 3:15 PM"
-    },
-    {
-        personId: "12346",
-        bedroomId: "B-102",
-        residentScore: 45,
-        time: "March 19th, 2024, at 4:15 PM"
-    },
-    {
-        personId: "12347",
-        bedroomId: "C-103",
-        residentScore: 55,
-        time: "March 20th, 2024, at 5:15 PM"
-    },
-    {
-        personId: "12348",
-        bedroomId: "D-104",
-        residentScore: 65,
-        time: "March 21st, 2024, at 6:15 PM"
-    },
-    {
-        personId: "12349",
-        bedroomId: "E-105",
-        residentScore: 75,
-        time: "March 22nd, 2024, at 7:15 PM"
-    }
-];
+let reservations = [];
+
+async function fetchReservations() {
+    reservations = await getDataDB('reservation/getReservations');
+        await generateCards();
+}
+
+
 
 // Function to generate cards dynamically
-function generateCards(cardsData) {
+async function generateCards() {
     const cardsContainer = $("#cards .row");
-    cardsContainer.empty(); // Clear existing content
+    cardsContainer.empty(); 
 
-    cardsData.forEach((card, index) => {
+    reservations.forEach((reservation, index) => {
         const cardHTML = `
             <div class="col-xl-4 col-md-6 col-sm-12 mb-4">
                 <div class="card border-0 shadow-lg rounded-3" data-bs-toggle="modal" data-bs-target="#criteriaModal" data-index="${index}">
@@ -48,21 +24,21 @@ function generateCards(cardsData) {
                         <div class="row mb-3">
                             <div class="col">
                                 <i class="fas fa-user person-icon fs-3 text-primary mb-2"></i>
-                                <p class="card-text mb-0">ID: ${card.personId}</p>
+                                <p class="card-text mb-0">ID: ${reservation.residentId}</p>
                             </div>
                             <div class="col-auto align-self-center">
                                 <div class="connector"></div>
                             </div>
                             <div class="col">
                                 <i class="fas fa-bed bedroom-icon fs-3 text-primary mb-2"></i>
-                                <p class="card-text mb-0">Room: ${card.bedroomId}</p>
+                                <p class="card-text mb-0">Room: ${reservation.roomId}</p>
                             </div>
                         </div>
                         <p class="card-text mb-0">
-                            <i class="bi bi-award me-2"></i>Resident Score: ${card.residentScore}
+                            <i class="bi bi-award me-2"></i>Resident Score: ${reservation.score}
                         </p>
                         <p class="card-text mb-0">
-                            <i class="bi bi-clock me-2"></i>Time: ${card.time}
+                            <i class="bi bi-clock me-2"></i>Time: ${reservation.reservationDate}
                         </p>
                     </div>
                 </div>
@@ -72,22 +48,40 @@ function generateCards(cardsData) {
     });
 }
 
+document.getElementById('reservationStartBtn').addEventListener('click', () => {
+    confirmAction("Confirm Start Reservation", "Are you sure you want to start the reservation process?")
+        .then(async () => {
+            applyBlurEffect();
+            showLoader();
+            try {
+                await updateDataDB('reservation/reservationProcess');
+                await fetchReservations();
+                handleSuccess('Reservation Done Successfully!');
+            } catch (error) {
+                console.error('Error during reservation process:', error);
+                handleFailure('An error occurred while starting the reservation process. Please try again.');
+            } finally {
+                hideLoader();
+                removeBlurEffect();
+            }
+        })
+        .catch((error) => {
+            console.error('Error during confirmation:', error);
+            handleFailure('An error occurred during confirmation. Please try again.');
+        });
+});
+
+
+
+
 // Document Ready Function
 $(document).ready(function () {
     applyBlurEffect();
     showLoader();
 
-    // Simulate fetching data after a delay
-    setTimeout(() => {
-        generateCards(cardsData);
+    setTimeout(async () => {
+        await fetchReservations();
         hideLoader();
         removeBlurEffect();
-    }, 1000); // Simulate 3 seconds delay for fetching data
-
-    $(document).on('click', '#cards .card', function () {
-        const cardIndex = $(this).data("index");
-        console.log(`Card Index: ${cardIndex}`);
-        // Here you can handle what happens when a card is clicked
-        // For example, you might want to show more details in a modal
-    });
+    }, 7000);
 });

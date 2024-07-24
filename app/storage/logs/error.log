@@ -56,3 +56,5 @@
 2024-07-23 19:02:20 Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'nmudorm.members' doesn't exist | File: C:\xampp\htdocs\nmu-dorm-app\app\models\Maintenance.php | Line: 49
 2024-07-23 19:02:21 Error: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'nmudorm.members' doesn't exist | File: C:\xampp\htdocs\nmu-dorm-app\app\models\Maintenance.php | Line: 49
 2024-07-23 23:11:55 Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'criteriaType' cannot be null | File: C:\xampp\htdocs\nmu-dorm-app\app\models\Reservation.php | Line: 55
+2024-07-25 00:03:37 Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'occupiedStatus' in 'where clause' | File: C:\xampp\htdocs\nmu-dorm-app\app\models\Reservation.php | Line: 141
+2024-07-25 00:04:59 Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'occupiedStatus' in 'where clause' | File: C:\xampp\htdocs\nmu-dorm-app\app\models\Reservation.php | Line: 141

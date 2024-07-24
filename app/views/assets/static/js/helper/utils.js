@@ -119,7 +119,8 @@ export function removeBlurEffect() {
 }
 
 export function showLoader() {
-    const loaderContainer = document.getElementById('preloader');
+    // Create a new loader container element
+    const loaderContainer = document.createElement('div');
     loaderContainer.className = 'preloader';
     document.body.appendChild(loaderContainer);
 
@@ -143,6 +144,7 @@ export function hideLoader() {
         loaderContainer.remove();
     }
 }
+
 
 // Promisified AJAX Request Functions
 function ajaxRequest(method, url, data, successCallback, errorCallback) {
