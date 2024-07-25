@@ -58,3 +58,9 @@
 2024-07-23 23:11:55 Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'criteriaType' cannot be null | File: C:\xampp\htdocs\nmu-dorm-app\app\models\Reservation.php | Line: 55
 2024-07-25 00:03:37 Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'occupiedStatus' in 'where clause' | File: C:\xampp\htdocs\nmu-dorm-app\app\models\Reservation.php | Line: 141
 2024-07-25 00:04:59 Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'occupiedStatus' in 'where clause' | File: C:\xampp\htdocs\nmu-dorm-app\app\models\Reservation.php | Line: 141
+2024-07-25 11:50:56 Error: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens | File: C:\xampp\htdocs\nmu-dorm-app\app\models\Member.php | Line: 285
+2024-07-25 12:34:48 Error: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '' at line 1 | File: C:\xampp\htdocs\nmu-dorm-app\app\models\Member.php | Line: 298
+2024-07-25 12:38:32 Error: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined | File: C:\xampp\htdocs\nmu-dorm-app\app\models\Member.php | Line: 302
+2024-07-25 12:40:21 Error: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined | File: C:\xampp\htdocs\nmu-dorm-app\app\models\Member.php | Line: 302
+2024-07-25 12:40:31 Error: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined | File: C:\xampp\htdocs\nmu-dorm-app\app\models\Member.php | Line: 302
+2024-07-25 12:41:40 Error: SQLSTATE[HY093]: Invalid parameter number: parameter was not defined | File: C:\xampp\htdocs\nmu-dorm-app\app\models\Member.php | Line: 300

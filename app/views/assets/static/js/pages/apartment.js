@@ -56,7 +56,6 @@ async function populateTable() {
 function constructTableRow(apartment) {
    const occupancyBadge = generateOccupancyBadge(apartment.roomsCount);
    const building = buildings.find( (building)=> building.id === apartment.buildingId)
-   console.log(building.number);
    return `
         <tr>
             <td>${apartment.number}</td>

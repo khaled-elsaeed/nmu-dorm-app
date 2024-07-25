@@ -4,7 +4,7 @@ require_once '../models/Database.php';
 require_once '../helpers/utilities.php';
 
 
-class MemberModel {
+class Member {
     private $db;
 
     public function __construct() {
@@ -269,6 +269,39 @@ function generatePassword($length = 12) {
             return errorResponse("Failed to retrieve member details. Please try again later.");
         }
     }
+
+    public function getMembersDocs() {
+        try {
+            $conn = $this->db->getConnection();
+            $sql = "SELECT payments.*, account.username, account.profilePicturePath, account.email, member.registrationDate 
+                    FROM `payments`
+                    INNER JOIN member ON member.id = payments.memberId 
+                    INNER JOIN account ON account.id = member.accountId;";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return successResponse($results);
+        } catch (PDOException $e) {
+            logError($e->getMessage());
+            return errorResponse("Failed to retrieve member details. Please try again later.");
+        }
+    }
+    
+    public function updateMemberDocsStatuses($paymentId, $status) {
+        try {
+            $conn = $this->db->getConnection();
+            $sql = "UPDATE payments SET status = :status, housingExpenses = 12000, insurance = 4000 WHERE id = :paymentId";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':paymentId', $paymentId);
+            $stmt->bindParam(':status', $status);
+            $stmt->execute();
+            return successResponse();
+        } catch (PDOException $e) {
+            logError($e->getMessage());
+            return errorResponse("Failed to update payment status. Please try again later.");
+        }
+    }
+    
 }
 
 ?>

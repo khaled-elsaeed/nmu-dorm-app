@@ -33,15 +33,17 @@ function getActionFromHash($hashedAction) {
         hash('sha256', 'member/createProfile') => 'member/createProfile',
         hash('sha256', 'member/getAllMembers') => 'member/getAllMembers',
         hash('sha256', 'member/getMemberInfo') => 'member/getMemberInfo',
+        hash('sha256', 'member/getMembersDocs') => 'member/getMembersDocs',
+        hash('sha256', 'member/updateMemberDocsStatus') => 'member/updateMemberDocsStatus',
+
+
+
         hash('sha256', 'reservation/getCriteriaFields') => 'reservation/getCriteriaFields',
         hash('sha256', 'reservation/getCriteria') => 'reservation/getCriteria',
         hash('sha256', 'reservation/addNewCriteria') => 'reservation/addNewCriteria',
         hash('sha256', 'reservation/deleteCriteria') => 'reservation/deleteCriteria',
         hash('sha256', 'reservation/getReservations') => 'reservation/getReservations',
         hash('sha256', 'reservation/reservationProcess') => 'reservation/reservationProcess',
-
-
-        
         hash('sha256', 'room/create') => 'room/create',
         hash('sha256', 'room/delete') => 'room/delete',
         hash('sha256', 'maintenance/getMaintenance') => 'maintenance/getMaintenance',
