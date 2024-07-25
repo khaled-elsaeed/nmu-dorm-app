@@ -301,6 +301,73 @@ function generatePassword($length = 12) {
             return errorResponse("Failed to update payment status. Please try again later.");
         }
     }
+
+
+    public function getExpelledMembers() {
+        try {
+            $conn = $this->db->getConnection();
+            
+            // Retrieve all students
+            $members = $this->getAllStudents($conn);
+            
+            // Retrieve all alerts
+            $alerts = $this->getAllStudentAlerts($conn);
+            
+            // Initialize an array to hold members with their alerts
+            $membersWithAlerts = array();
+            
+            // Initialize a map to hold alerts for each student
+            $alertsMap = array();
+            
+            // Map alerts to their respective students
+            foreach ($alerts as $alert) {
+                $studentId = $alert['universityId']; // Ensure 'studentId' matches your column name
+                if (!isset($alertsMap[$studentId])) {
+                    $alertsMap[$studentId] = array();
+                }
+                $alertsMap[$studentId][] = array(
+                    'type' => $alert['type'],
+                    'date' => $alert['date'],
+                    'description' => $alert['description']
+                );
+            }
+            
+            // Combine students with their alerts
+            foreach ($members as $member) {
+                $studentId = $member['universityId']; // Ensure 'studentId' matches your column name
+                $memberWithAlerts = $member;
+                $memberWithAlerts['alerts'] = isset($alertsMap[$studentId]) ? $alertsMap[$studentId] : array();
+                $membersWithAlerts[] = $memberWithAlerts;
+            }
+            
+            return successResponse($membersWithAlerts);
+        } catch (PDOException $e) {
+            logError($e->getMessage());
+            return errorResponse("Failed to retrieve expelled members. Please try again later.");
+        }
+    }
+    
+    public function getAllStudents($conn) {
+        $studentQuery = "SELECT * FROM expelledmembers";
+        $stmt = $conn->query($studentQuery);
+        $membersData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        return $membersData;
+    }
+    
+
+    public function getAllStudentAlerts($conn) {
+        $alertQuery = "SELECT * FROM alert 
+        LEFT JOIN expelledmembers ON expelledmembers.universityId = alert.universityId
+        LEFT JOIN descriptions ON descriptions.id = alert.descriptionId";
+        $stmt = $conn->query($alertQuery);
+        $alertsData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        return $alertsData;
+    }
+    
+    
+    
     
 }
 

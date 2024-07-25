@@ -35,6 +35,8 @@ function getActionFromHash($hashedAction) {
         hash('sha256', 'member/getMemberInfo') => 'member/getMemberInfo',
         hash('sha256', 'member/getMembersDocs') => 'member/getMembersDocs',
         hash('sha256', 'member/updateMemberDocsStatus') => 'member/updateMemberDocsStatus',
+        hash('sha256', 'member/getExpelledMembers') => 'member/getExpelledMembers',
+
 
 
 

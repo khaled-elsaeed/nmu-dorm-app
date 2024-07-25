@@ -29,6 +29,8 @@ class MemberController {
                 return $this->getMembersDocs();
             case 'member/updateMemberDocsStatus':
                 return $this->updateMemberDocsStatuses($data);
+            case 'member/getExpelledMembers':
+                return $this->getExpelledMembers();
             default:
                 // Unknown action
                 return errorResponse('Invalid Action');
@@ -92,6 +94,11 @@ class MemberController {
         }
         $result = $this->memberModel->updateMemberDocsStatuses($data['paymentId'], $data['status']);
         return $result['success'] ? successResponse() : errorResponse($result['error']);
+    }
+
+    public function getExpelledMembers() {
+        $result = $this->memberModel->getExpelledMembers();
+        return $result['success'] ? successResponse($result['data']) : errorResponse($result['error']);
     }
 }
 
